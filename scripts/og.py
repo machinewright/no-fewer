@@ -1,4 +1,4 @@
-# Renders og.png (1200x630): the title next to level 18 with one target's supply lines shown.
+# Renders og.png (1200x630): the title next to level 17 with the cyan target's supply lines shown.
 # Needs the local server: python3 -m http.server 8772 --bind 127.0.0.1 (from the repo root).
 import asyncio, base64
 from playwright.async_api import async_playwright
@@ -8,9 +8,9 @@ async def main():
         ctx = await b.new_context(viewport={'width': 1100, 'height': 1000}, device_scale_factor=2, reduced_motion='reduce')
         pg = await ctx.new_page()
         await pg.goto('http://127.0.0.1:8772/index.html'); await pg.wait_for_timeout(800)
-        await pg.locator('#levels button').nth(17).click()
-        c = pg.locator('canvas'); bb = await c.bounding_box(); cs = bb['width'] / 9
-        await pg.mouse.click(bb['x'] + cs * 1.5, bb['y'] + cs * 6.5); await pg.wait_for_timeout(200)
+        await pg.locator('#levels button').nth(16).click()
+        c = pg.locator('canvas'); bb = await c.bounding_box(); cs = bb['width'] / 7
+        await pg.mouse.click(bb['x'] + cs * 4.5, bb['y'] + cs * 6.5); await pg.wait_for_timeout(200)
         png = await c.screenshot()
         card = await b.new_page(viewport={'width': 1200, 'height': 630})
         serif = base64.b64encode(open('fonts/source-serif-4-latin-opsz-normal.woff2', 'rb').read()).decode()
