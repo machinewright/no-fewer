@@ -15,7 +15,7 @@ export const allUndecided = (g) => new Int8Array(g.cells.length).fill(UNDECIDED)
 export const flipCount = (g, d) => g.cells.reduce((n, c, i) => n + (isMirror(c) && d[i] !== UNDECIDED && d[i] !== c.rot ? 1 : 0), 0);
 
 // Returns the trace so callers can describe the state in text.
-export function drawBoard(canvas, g, decided, { focus = -1, fadeUnreached = true, ghosts = true } = {}) {
+export function drawBoard(canvas, g, decided, { focus = -1, fadeUnreached = true, ghosts = true, showStart = false, settled = null } = {}) {
   // ghosts=false: show only certain light; undecided mirrors are drawn faintly in their starting tilt.
   const ctx = canvas.getContext('2d');
   const W = canvas.width, cell = W / g.w, cx = (x) => (x + 0.5) * cell, cy = (y) => (y + 0.5) * cell;
@@ -64,11 +64,14 @@ export function drawBoard(canvas, g, decided, { focus = -1, fadeUnreached = true
       };
       const far = fadeUnreached && !t.reached.has(i) ? 0.3 : 1;
       if (d === UNDECIDED && !ghosts) { ctx.strokeStyle = COLORS.undecided; stroke(c.rot, 0.45, cell * 0.06); }
-      else if (d === UNDECIDED) { ctx.strokeStyle = COLORS.undecided; stroke(0, 0.6 * far, cell * 0.05); stroke(1, 0.6 * far, cell * 0.05); }
+      else if (d === UNDECIDED && showStart) { // X, with the starting tilt stronger so "flip" and "stay" stay readable
+        ctx.strokeStyle = COLORS.undecided; stroke(c.rot ^ 1, 0.22 * far, cell * 0.035); ctx.strokeStyle = '#c3cad6'; stroke(c.rot, far, cell * 0.065);
+      } else if (d === UNDECIDED) { ctx.strokeStyle = COLORS.undecided; stroke(0, 0.6 * far, cell * 0.05); stroke(1, 0.6 * far, cell * 0.05); }
       else {
         const flipped = d !== c.rot;
         ctx.strokeStyle = flipped ? COLORS.flipped : COLORS.mirror; stroke(d, far, cell * 0.09);
-        if (flipped) { ctx.fillStyle = COLORS.flipped; ctx.beginPath(); ctx.arc(x * cell + cell * 0.84, y * cell + cell * 0.16, cell * 0.065, 0, 7); ctx.fill(); }
+        const dot = showStart ? !settled || settled[i] !== UNDECIDED : flipped;
+        if (dot) { ctx.fillStyle = flipped ? COLORS.flipped : COLORS.mirror; ctx.beginPath(); ctx.arc(x * cell + cell * 0.84, y * cell + cell * 0.16, cell * 0.065, 0, 7); ctx.fill(); }
       }
     }
     if (i === focus) {

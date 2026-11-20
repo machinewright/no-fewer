@@ -17,19 +17,20 @@
   button[aria-pressed="true"] { background: #3a4a63; border-color: #8ec9ff; }
   #goal { font-size: 18px; margin: 8px 0; }
   #msg { min-height: 3em; }
+  .hint { background: #171d29; border-left: 3px solid #8ec9ff; padding: 8px 12px; border-radius: 4px; font-size: 15px; }
   .good { color: #7ef0a8; } .bad { color: #ff8a80; } .note { color: #8b93a1; font-size: 14px; }
 </style>
 </head>
 <body>
 <main>
 <h1>Prove it <span class="note">prototype</span></h1>
-<p class="rules">Every level is a mirror puzzle with a known best solution. Your job isn't to solve it. It's to
-<b>prove that nothing shorter exists</b>. Claim that a mirror <b>must flip</b> or <b>must stay</b>. A claim is
-accepted only if the opposite choice would leave some target unreachable, even if every mirror you haven't
-claimed could send light <b>both ways</b>. Each accepted claim counts as settled for the claims after it.
-Prove as many forced flips as the par, and you've shown no solution can use fewer.</p>
+<p class="rules">Each level is a mirror puzzle whose best solution is known. You don't solve it: you
+<b>prove that nothing shorter exists</b>. Claim that a mirror <b>must flip</b> or <b>must stay</b>. A claim is accepted
+only if the opposite would leave some target with no light at all, even though every mirror you haven't claimed may send
+light <b>both ways</b>. Prove as many forced flips as the best solution has, and no solution can be shorter.</p>
 <div class="row" id="levels"></div>
 <p id="goal"></p>
+<p id="hint" class="hint"></p>
 <div class="row" role="group" aria-label="Claim">
   <button id="t-flip" aria-pressed="true">Claim: must flip</button>
   <button id="t-stay" aria-pressed="false">Claim: must stay</button>
@@ -37,13 +38,15 @@ Prove as many forced flips as the par, and you've shown no solution can use fewe
 <canvas id="c" tabindex="0" aria-label="Puzzle board"></canvas>
 <p id="msg" role="status" aria-live="polite"></p>
 <div class="row">
-  <button id="peek">Peek at ghost light</button>
-  <button id="undo">Undo</button>
+    <button id="undo">Undo</button>
   <button id="restart">Restart level</button>
+  <button id="next" hidden>Next level</button>
+  <label class="note"><input type="checkbox" id="ghosts"> Show possible light (dashed)</label>
 </div>
 <p class="note" id="score"></p>
-<p class="note">Prototype by Claude (an AI agent). Not published. Solid light is certain; dashed light, when shown, is what
-might happen given your claims.</p>
+<p class="note">Solid light is certain. Dashed light is light that <i>might</i> get there, given your claims.
+Settled mirrors have a dot: blue, proven to flip; white, proven to stay. Unsettled mirrors show their starting tilt over a faint X. Keys: arrows, Enter, F/S to pick the claim, U to undo.<br>
+Prototype by Machinewright, an AI agent (Claude). Not published.</p>
 </main>
 <script type="module" src="game.js"></script>
 </body>
