@@ -3,6 +3,7 @@
 // A mirror whose decided rot differs from the board's starting rot is drawn as "flipped" (blue).
 import { MIRROR, TARGET, WALL, EMITTER, DX, DY } from './engine.js';
 import { traceGhost, UNDECIDED } from './ghost.js';
+import { feedEdges, segEdge } from './feed.js';
 
 export const COLORS = {
   bg: '#12161f', grid: '#232a36', beam: '#ffd166', ghost: 'rgba(255,209,102,0.5)', wall: '#3a4252',
@@ -15,7 +16,7 @@ export const allUndecided = (g) => new Int8Array(g.cells.length).fill(UNDECIDED)
 export const flipCount = (g, d) => g.cells.reduce((n, c, i) => n + (isMirror(c) && d[i] !== UNDECIDED && d[i] !== c.rot ? 1 : 0), 0);
 
 // Returns the trace so callers can describe the state in text.
-export function drawBoard(canvas, g, decided, { focus = -1, fadeUnreached = true, ghosts = true, showStart = false, settled = null, selected = -1 } = {}) {
+export function drawBoard(canvas, g, decided, { focus = -1, fadeUnreached = true, ghosts = true, showStart = false, settled = null, selected = -1, feedTarget = -1 } = {}) {
   // ghosts=false: show only certain light; undecided mirrors are drawn faintly in their starting tilt.
   const ctx = canvas.getContext('2d');
   const W = canvas.width, cell = W / g.w, cx = (x) => (x + 0.5) * cell, cy = (y) => (y + 0.5) * cell;
@@ -29,11 +30,16 @@ export function drawBoard(canvas, g, decided, { focus = -1, fadeUnreached = true
   ctx.lineCap = 'round';
   const line = (s) => { ctx.beginPath(); ctx.moveTo(cx(s.x1), cy(s.y1)); ctx.lineTo(cx(s.x2), cy(s.y2)); ctx.stroke(); };
   ctx.strokeStyle = COLORS.ghost; ctx.lineWidth = Math.max(1.5, cell * 0.04); ctx.setLineDash([cell * 0.09, cell * 0.09]);
-  if (ghosts) t.segments.filter((s) => s.ghost).forEach(line);
+  // feedTarget: show only light that can still reach that target; the rest is drawn faintly
+  const feed = feedTarget >= 0 ? feedEdges(g, decided, feedTarget) : null;
+  const feeds = (s) => !feed || feed.has(segEdge(g, s));
+  const dim = (s, a) => { ctx.globalAlpha = feeds(s) ? a : a * 0.13; line(s); };
+  if (ghosts) t.segments.filter((s) => s.ghost).forEach((s) => dim(s, 1));
+  ctx.globalAlpha = 1;
   ctx.setLineDash([]);
   for (const [w, a] of [[0.26, 0.12], [0.13, 0.25], [0.055, 1]]) {
     ctx.globalAlpha = a; ctx.lineWidth = Math.max(1.5, cell * w); ctx.strokeStyle = COLORS.beam;
-    t.segments.filter((s) => !s.ghost).forEach(line);
+    t.segments.filter((s) => !s.ghost).forEach((s) => dim(s, a));
   }
   ctx.globalAlpha = 1;
   g.cells.forEach((c, i) => {
@@ -92,6 +98,10 @@ export function drawBoard(canvas, g, decided, { focus = -1, fadeUnreached = true
         const dot = showStart ? !settled || settled[i] !== UNDECIDED : flipped;
         if (dot) { ctx.fillStyle = COLORS.flipped; ctx.beginPath(); ctx.arc(x * cell + cell * 0.84, y * cell + cell * 0.16, cell * 0.065, 0, 7); ctx.fill(); }
       }
+    }
+    if (i === feedTarget) { // the target whose light the player is looking at
+      ctx.strokeStyle = COLORS.focus; ctx.lineWidth = Math.max(2, cell * 0.035); ctx.setLineDash([]);
+      ctx.beginPath(); ctx.arc(px, py, cell * 0.44, 0, 7); ctx.stroke();
     }
     if (i === selected) { // the mirror the player is about to claim: a solid rounded frame
       ctx.strokeStyle = COLORS.flipped; ctx.lineWidth = Math.max(2, cell * 0.05);

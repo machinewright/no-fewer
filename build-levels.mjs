@@ -10,7 +10,7 @@ const PICKS = [ // [generator level, seed, hint]
   [2, 28, 'Open mirrors (the faint X) may send light either way, so the dashed light shows everywhere light <i>might</i> go. Look for a target that only one dashed path reaches: the mirrors on that path are forced.'],
   [4, 69, 'You can also claim a mirror <b>must stay</b>, when flipping it would leave a target with no light. A settled mirror sends light only one way, and that can make the next claim provable.'],
   [4, 291, 'Here no flip can be proven at the start. Begin with mirrors that must stay.'],
-  [4, 30, null], [5, 57, null], [4, 538, null], [6, 201, null], [6, 123, null],
+  [4, 30, 'Busy board? Tap a target: only the light that could still reach it stays bright. Where all of that light squeezes through one mirror, the mirror is forced. Tap the target again to see everything.'], [5, 57, null], [4, 538, null], [6, 201, null], [6, 123, null],
   [8, 190, null], [8, 47, null], [9, 74, null], [10, 101, null], [10, 88, null],
 ];
 const levels = PICKS.map(([L, seed, hint]) => {

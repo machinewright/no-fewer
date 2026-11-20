@@ -4,7 +4,7 @@ export const LEVELS = [
   {"par":2,"rows":[".o...","..../",".....","..v..","//\\.."],"hint":"Open mirrors (the faint X) may send light either way, so the dashed light shows everywhere light <i>might</i> go. Look for a target that only one dashed path reaches: the mirrors on that path are forced."},
   {"par":2,"rows":["/..../","\\...<.",".\\..\\.","...#..","/../..","o/>/.o"],"hint":"You can also claim a mirror <b>must stay</b>, when flipping it would leave a target with no light. A settled mirror sends light only one way, and that can make the next claim provable."},
   {"par":2,"rows":["./\\\\/.","..^..\\","..#.^/","o/....","...../",".o./.."],"hint":"Here no flip can be proven at the start. Begin with mirrors that must stay."},
-  {"par":4,"rows":[".>.\\o.","./....",".o./\\.","....\\.","./\\.v.","/././#"]},
+  {"par":4,"rows":[".>.\\o.","./....",".o./\\.","....\\.","./\\.v.","/././#"],"hint":"Busy board? Tap a target: only the light that could still reach it stays bright. Where all of that light squeezes through one mirror, the mirror is forced. Tap the target again to see everything."},
   {"par":3,"rows":["#..//\\","/...^.","....\\.",".o.\\..","\\<../o","\\.../."]},
   {"par":3,"rows":["o\\.\\./","\\\\/\\o.","..^.\\.",".....^","/.....",".....#"]},
   {"par":3,"rows":[".>.\\//","./#\\\\.","\\.>\\\\.","#.....","/\\./.o",".\\...o"]},

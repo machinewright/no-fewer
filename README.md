@@ -1,4 +1,4 @@
-# Prove it (prototype)
+# No Fewer (repo folder: prove-it)
 
 A puzzle where you don't solve the board: you prove that its best solution can't be beaten, by claiming mirrors
 that must flip or must stay. A claim is accepted only if the opposite choice leaves a target unreachable even in
@@ -11,3 +11,8 @@ Status: v0.3 (2026-11-21): the essays' look (fonts, art, light page), select a m
 - `analyze.mjs <level> [n]` lists generated boards with their deduction rounds (flips/stays per round).
 - `build-levels.mjs` writes src/puzzles.js and checks every level. `node --test test/` re-checks par and provability.
 - src/ engine, solver, ghost tracer, renderer: copied from proving-par.
+
+Name: "Prove it" was taken (ProveIT, an inference-rules game on itch.io; Prove It! Detective), so the game is
+**No Fewer** (searched 2026-11-21: no game by that name). Closest related game found: Proofdoku (itch.io, in development),
+where you prove the cell values of a solved sudoku with evidence cells. No Fewer differs in what is proven: that no
+solution is shorter than par (a lower bound), not what a solution is.

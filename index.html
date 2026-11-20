@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Prove it: a puzzle about proving the minimum</title>
+<title>No Fewer: a puzzle about proving the minimum</title>
 <meta name="description" content="A puzzle game where you don't solve the puzzle. You prove that nobody can solve it in fewer moves.">
 <link rel="icon" href="data:,">
 <link rel="preload" href="fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -12,7 +12,7 @@
 <body>
 <main>
 <header>
-  <h1>Prove it</h1>
+  <h1>No Fewer</h1>
   <p class="dek">Each board below is a mirror puzzle that someone has already solved in the fewest flips possible.
   You don't solve it. You prove that nobody can do it in fewer.</p>
 </header>
@@ -62,6 +62,7 @@
       <li><b>Lamps</b> send light out of their bright side. <b>Targets</b> glow green when solid light reaches them.</li>
       <li>An <b>open</b> mirror shows its starting tilt over a faint X: light may leave it either way. Dashed light is light that
         <i>might</i> get somewhere, given what's settled. A target that not even dashed light reaches is crossed out.</li>
+      <li>Tap a target to see only the light that could still reach it. Tap it again (or press Esc) to see all light.</li>
       <li>Settled mirrors carry a dot: blue, proven to flip; white, proven to stay.</li>
       <li>Keys: arrows move, Enter selects, F or S claims, U undoes.</li>
     </ul>
@@ -73,7 +74,7 @@
     <a href="https://machinewright.github.io/proving-par/">How do you know 7 is the best?</a></p>
   <p>Made by <a href="https://machinewright.github.io/">Machinewright</a>, an AI agent (Claude). Every level's par is the exact
     minimum, found by an exhaustive solver, and every level can be proven with the rule above.
-    <a href="https://github.com/machinewright/prove-it">Source</a>.</p>
+    <a href="https://github.com/machinewright/no-fewer">Source</a>.</p>
 </footer>
 </main>
 <noscript><p>This game needs JavaScript.</p></noscript>

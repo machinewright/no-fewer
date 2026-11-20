@@ -1,4 +1,4 @@
-// "Prove it": prove a mirror puzzle's par is a lower bound by claiming forced mirrors.
+// "No Fewer" (formerly "Prove it"): prove a mirror puzzle's par is a lower bound by claiming forced mirrors.
 // Select a mirror, then claim it must flip or must stay. A claim is accepted when the opposite choice leaves some target
 // unreachable even in ghost light (every open mirror sends light both ways).
 import { parseBoard } from './src/boards.js';
@@ -10,7 +10,7 @@ import { LEVELS } from './src/puzzles.js';
 const $ = (id) => document.getElementById(id);
 const canvas = $('c');
 const KEY = 'prove-it-v2';
-let lv, g, goal, claims, history, show = null, wrong = 0, won = false, cursor = -1, sel = -1;
+let lv, g, goal, claims, history, show = null, wrong = 0, won = false, cursor = -1, sel = -1, ft = -1; // ft: the target whose light is shown alone
 let ghostsOn = localStorage.getItem(KEY + '-ghosts') !== '0';
 
 function loadBest() {
@@ -24,7 +24,7 @@ const tilt = (r) => (r ? 'leaning \\' : 'leaning /');
 function load(k) {
   lv = k; g = parseBoard(LEVELS[k].rows); goal = targets(g);
   claims = new Int8Array(g.cells.length).fill(UNDECIDED); history = [];
-  show = null; wrong = 0; won = false; cursor = -1; sel = -1;
+  show = null; wrong = 0; won = false; cursor = -1; sel = -1; ft = -1;
   $('hint').innerHTML = LEVELS[k].hint || '';
   $('hint').hidden = !LEVELS[k].hint;
   $('next').hidden = true;
@@ -41,7 +41,12 @@ function select(i) {
   if (won || i < 0) return;
   show = null;
   const c = g.cells[i];
-  if (!isMirror(c)) { sel = -1; msg('Only mirrors can be claimed.'); return update(); }
+  if (c.type === 'target') {
+    ft = ft === i ? -1 : i;
+    msg(ft < 0 ? 'Showing all light again.' : 'Showing only the light that could still reach this target. Tap it again to show all light.');
+    return update();
+  }
+  if (!isMirror(c)) { sel = -1; msg('Select a mirror to claim it, or a target to see only the light that could reach it.'); return update(); }
   if (claims[i] !== UNDECIDED) {
     sel = -1; msg(`Already settled: this mirror ${claims[i] === c.rot ? 'must stay' : 'must flip'}. Undo takes a claim back.`);
     return update();
@@ -106,7 +111,7 @@ function draw() {
   const w = Math.round(css * dpr), h = Math.round((css * dpr * g.h) / g.w);
   if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
   drawBoard(canvas, g, show ? show.d : claims, {
-    focus: show && show.focus >= 0 ? show.focus : cursor, selected: show ? -1 : sel, fadeUnreached: false,
+    focus: show && show.focus >= 0 ? show.focus : cursor, selected: show ? -1 : sel, feedTarget: won ? -1 : ft, fadeUnreached: false,
     ghosts: show ? true : ghostsOn, showStart: true, settled: claims,
   });
   canvas.setAttribute('aria-label', describe());
@@ -143,7 +148,7 @@ canvas.addEventListener('keydown', (e) => {
     e.preventDefault(); if (cursor < 0) cursor = sel >= 0 ? sel : 0;
     const x = Math.min(g.w - 1, Math.max(0, (cursor % g.w) + mv[0])), y = Math.min(g.h - 1, Math.max(0, Math.floor(cursor / g.w) + mv[1]));
     cursor = y * g.w + x; if (!won) show = null; draw();
-  } else if ((e.key === 'Enter' || e.key === ' ') && cursor >= 0) { e.preventDefault(); select(cursor); }
+  } else if (e.key === 'Escape' && ft >= 0) { ft = -1; msg('Showing all light again.'); update(); } else if ((e.key === 'Enter' || e.key === ' ') && cursor >= 0) { e.preventDefault(); select(cursor); }
 });
 document.addEventListener('keydown', (e) => {
   if (e.ctrlKey || e.metaKey || e.altKey || e.target.matches('input, textarea')) return;
