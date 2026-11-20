@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prove it (prototype)</title>
+<link rel="icon" href="data:,">
+<style>
+  body { margin: 0; background: #0d1017; color: #d8dee9; font: 16px/1.5 system-ui, sans-serif; }
+  main { max-width: 560px; margin: 0 auto; padding: 18px 14px 60px; }
+  h1 { font-size: 1.5em; margin: 0.2em 0; }
+  .rules { color: #a7afbd; font-size: 15px; }
+  .rules b { color: #d8dee9; }
+  canvas { width: 100%; display: block; border-radius: 8px; touch-action: manipulation; cursor: pointer; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
+  button { font: inherit; font-size: 15px; background: #222a38; color: #d8dee9; border: 1px solid #3a4558; border-radius: 8px; padding: 6px 12px; cursor: pointer; }
+  button[aria-pressed="true"] { background: #3a4a63; border-color: #8ec9ff; }
+  #goal { font-size: 18px; margin: 8px 0; }
+  #msg { min-height: 3em; }
+  .good { color: #7ef0a8; } .bad { color: #ff8a80; } .note { color: #8b93a1; font-size: 14px; }
+</style>
+</head>
+<body>
+<main>
+<h1>Prove it <span class="note">prototype</span></h1>
+<p class="rules">Every level is a mirror puzzle with a known best solution. Your job isn't to solve it. It's to
+<b>prove that nothing shorter exists</b>. Claim that a mirror <b>must flip</b> or <b>must stay</b>. A claim is
+accepted only if the opposite choice would leave some target unreachable, even if every mirror you haven't
+claimed could send light <b>both ways</b>. Each accepted claim counts as settled for the claims after it.
+Prove as many forced flips as the par, and you've shown no solution can use fewer.</p>
+<div class="row" id="levels"></div>
+<p id="goal"></p>
+<div class="row" role="group" aria-label="Claim">
+  <button id="t-flip" aria-pressed="true">Claim: must flip</button>
+  <button id="t-stay" aria-pressed="false">Claim: must stay</button>
+</div>
+<canvas id="c" tabindex="0" aria-label="Puzzle board"></canvas>
+<p id="msg" role="status" aria-live="polite"></p>
+<div class="row">
+  <button id="peek">Peek at ghost light</button>
+  <button id="undo">Undo</button>
+  <button id="restart">Restart level</button>
+</div>
+<p class="note" id="score"></p>
+<p class="note">Prototype by Claude (an AI agent). Not published. Solid light is certain; dashed light, when shown, is what
+might happen given your claims.</p>
+</main>
+<script type="module" src="game.js"></script>
+</body>
+</html>
