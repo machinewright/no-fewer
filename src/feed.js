@@ -2,19 +2,22 @@
 // `cell` heading `dir`) that lie on some emitter-to-target path in ghost light, where open mirrors send light both
 // ways. A segment from traceGhost is on such a path exactly when its first edge is (segments only change direction at
 // mirrors, so a straight run is all on a path or not at all).
-// Levels in this game have one color and no filters or splitters; feedEdges throws on boards that have them.
-import { reflect, DX, DY, WALL, EMITTER, TARGET, MIRROR, FILTER, SPLITTER } from './engine.js';
+// Only light of the target's color counts; a filter passes its own color and blocks the rest. Splitters are not
+// supported (no level uses them); feedEdges throws on boards that have them.
+import { reflect, colorOf, DX, DY, WALL, EMITTER, TARGET, MIRROR, FILTER, SPLITTER } from './engine.js';
 import { UNDECIDED } from './ghost.js';
 
 const options = (c, i, decided) => (c.fixed || decided[i] === UNDECIDED ? (c.fixed ? [c.rot] : [0, 1]) : [decided[i]]);
 
 export function feedEdges(g, decided, t) {
   const { w, h, cells } = g;
-  if (cells.some((c) => c.type === FILTER || c.type === SPLITTER || (c.color ?? 0) !== 0)) throw new Error('feedEdges: single-color mirror boards only');
+  if (cells.some((c) => c.type === SPLITTER)) throw new Error('feedEdges: no splitters');
+  const tc = colorOf(cells[t]);
+  const blocks = (c) => c.type === WALL || c.type === EMITTER || c.type === TARGET || (c.type === FILTER && colorOf(c) !== tc);
   const step = (i, d) => { const x = (i % w) + DX[d], y = Math.floor(i / w) + DY[d]; return x < 0 || y < 0 || x >= w || y >= h ? -1 : y * w + x; };
   // Forward: every edge light can take from an emitter.
   const fwd = new Set(), q = [];
-  cells.forEach((c, i) => { if (c.type === EMITTER) q.push([i, c.dir]); });
+  cells.forEach((c, i) => { if (c.type === EMITTER && colorOf(c) === tc) q.push([i, c.dir]); });
   while (q.length) {
     const [i, d] = q.pop(), k = i * 4 + d;
     if (fwd.has(k)) continue;
@@ -22,7 +25,7 @@ export function feedEdges(g, decided, t) {
     const n = step(i, d);
     if (n < 0) continue;
     const c = cells[n];
-    if (c.type === WALL || c.type === EMITTER || c.type === TARGET) continue;
+    if (blocks(c)) continue;
     if (c.type === MIRROR) for (const r of options(c, n, decided)) q.push([n, reflect(r, d)]);
     else q.push([n, d]);
   }
@@ -33,8 +36,8 @@ export function feedEdges(g, decided, t) {
     const [i, d] = b.pop(), k = i * 4 + d;
     if (back.has(k)) continue;
     const c = cells[i];
-    if (c.type === WALL || c.type === TARGET) continue;
-    if (c.type === EMITTER) { if (c.dir === d) back.add(k); continue; }
+    if (c.type === EMITTER) { if (c.dir === d && colorOf(c) === tc) back.add(k); continue; }
+    if (blocks(c)) continue;
     back.add(k);
     // light left cell i heading d: it came in heading e, from the neighbour behind
     const ins = c.type === MIRROR ? [0, 1, 2, 3].filter((e) => options(c, i, decided).some((r) => reflect(r, e) === d)) : [d];
@@ -43,7 +46,8 @@ export function feedEdges(g, decided, t) {
   return new Set([...fwd].filter((k) => back.has(k)));
 }
 
-// The edge key of a traceGhost segment (its first step), or -1 for a zero-length one.
+// The edge key of a traceGhost segment (its first step), or -1 for a zero-length one. Callers also check that the
+// segment's color is the target's.
 export function segEdge(g, s) {
   const dx = Math.sign(s.x2 - s.x1), dy = Math.sign(s.y2 - s.y1);
   const d = DX.findIndex((v, j) => v === dx && DY[j] === dy);

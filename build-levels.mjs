@@ -5,17 +5,22 @@ import { generateWith, paramsFor } from './src/generator.js';
 import { parseBoard } from './src/boards.js';
 import { solve } from './src/solver.js';
 import { deduceRounds, enc } from './analyze.mjs';
-const PICKS = [ // [generator level, seed, hint]
+const MONO = { colors: 1, filters: 0 }, C2 = { colors: 2, filters: 0 }, C2F = { colors: 2, filters: 1 };
+const PICKS = [ // [generator level, seed, hint, options (default: one color, no filters)]
   ['hand', ['>../.', '.....', '...o.'], 'One mirror stands between the lamp and the target. Select it, then claim it <b>must flip</b>. The game tests the opposite: if it stayed, could any light reach the target? None could, so the claim is proven.'],
   [2, 28, 'Open mirrors (the faint X) may send light either way, so the dashed light shows everywhere light <i>might</i> go. Look for a target that only one dashed path reaches: the mirrors on that path are forced.'],
   [4, 69, 'You can also claim a mirror <b>must stay</b>, when flipping it would leave a target with no light. A settled mirror sends light only one way, and that can make the next claim provable.'],
   [4, 291, 'Here no flip can be proven at the start. Begin with mirrors that must stay.'],
   [4, 30, 'Busy board? Tap a target: only the light that could still reach it stays bright. Where all of that light squeezes through one mirror, the mirror is forced. Tap the target again to see everything.'], [5, 57, null], [4, 538, null], [6, 201, null], [6, 123, null],
   [8, 190, null], [8, 47, null], [9, 74, null], [10, 101, null], [10, 88, null],
-  [11, 544, null], [12, 1312, null], [11, 1896, null], [13, 247, null], [13, 1404, null], [13, 624, null],
+  [11, 544, null], [12, 1312, null],
+  [9, 6333, 'Two colors now. A cyan (square) target lights only for cyan light, an amber (round) one only for amber. Tap a target: only light of its own color can feed it.', C2],
+  [11, 4669, null, C2], [11, 2697, null, C2], [11, 5400, null, C2],
+  [13, 6082, 'A tinted pane is a <b>filter</b>: light of its own color passes straight through, the other color is stopped.', C2F],
+  [13, 4331, null, C2F],
 ];
-const levels = PICKS.map(([L, seed, hint]) => {
-  const rows = L === 'hand' ? seed : enc(generateWith(seed, { ...paramsFor(L), colors: 1, filters: 0, splitters: 0 }).puzzle);
+const levels = PICKS.map(([L, seed, hint, opts = MONO]) => {
+  const rows = L === 'hand' ? seed : enc(generateWith(seed, { ...paramsFor(L), ...opts, splitters: 0 }).puzzle);
   const g = parseBoard(rows), par = solve(g).moves, d = deduceRounds(g);
   if (d.flips !== par) throw new Error(`level ${L}/${seed}: deduction proves ${d.flips}, par ${par}`);
   console.log(`${L}/${typeof seed === 'number' ? seed : '-'} ${g.w}x${g.h} par ${par} rounds ${d.rounds.map((q) => `${q.flips}f${q.stays}s`).join(' ')}`);

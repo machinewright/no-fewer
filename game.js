@@ -136,13 +136,16 @@ function describe() {
   }
   return s;
 }
+const multi = () => g.cells.some((c) => (c.type === 'emitter' || c.type === 'target') && (c.color ?? 0) > 0);
 const firstMirror = () => Math.max(0, g.cells.findIndex((c) => isMirror(c)));
 function describeCell(i) {
   const c = g.cells[i], at = `Column ${i % g.w + 1}, row ${Math.floor(i / g.w) + 1}: `;
   if (isMirror(c)) return at + `mirror, starts as ${c.rot ? 'backslash' : 'slash'}, `
     + (claims[i] === UNDECIDED ? 'open' : claims[i] === c.rot ? 'must stay' : 'must flip') + (i === sel ? ', selected' : '') + '.';
-  if (c.type === 'target') return at + `target, ${traceGhost(g, claims).litReal.has(i) ? 'lit' : 'dark'}${i === ft ? ', light to it shown alone' : ''}.`;
-  if (c.type === 'emitter') return at + `lamp, shining ${['up', 'right', 'down', 'left'][c.dir]}.`;
+  const col = multi() ? ['amber circle ', 'cyan square '][c.color ?? 0] : '';
+  if (c.type === 'target') return at + `${col}target, ${traceGhost(g, claims).litReal.has(i) ? 'lit' : 'dark'}${i === ft ? ', light to it shown alone' : ''}.`;
+  if (c.type === 'filter') return at + `${['amber circle', 'cyan square'][c.color ?? 0]} filter: only that color passes.`;
+  if (c.type === 'emitter') return at + `${col}lamp, shining ${['up', 'right', 'down', 'left'][c.dir]}.`;
   return at + (c.type === 'wall' ? 'wall.' : 'empty.');
 }
 function say(t) { $('sr').textContent = t; }

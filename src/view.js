@@ -1,7 +1,7 @@
 // Shared canvas board renderer for the essay's widgets.
 // state.decided[i]: the mirror's rot, or UNDECIDED (-1): drawn as an X that sends light both ways.
 // A mirror whose decided rot differs from the board's starting rot is drawn as "flipped" (blue).
-import { MIRROR, TARGET, WALL, EMITTER, DX, DY } from './engine.js';
+import { MIRROR, TARGET, WALL, EMITTER, FILTER, DX, DY, colorOf } from './engine.js';
 import { traceGhost, UNDECIDED } from './ghost.js';
 import { feedEdges, segEdge } from './feed.js';
 
@@ -9,6 +9,17 @@ export const COLORS = {
   bg: '#12161f', grid: '#232a36', beam: '#ffd166', ghost: 'rgba(255,209,102,0.5)', wall: '#3a4252',
   mirror: '#d8dee9', flipped: '#8ec9ff', undecided: '#8b93a1', lit: '#7ef0a8', dead: '#ff8a80', focus: '#ffffff',
 };
+
+// Beam colors, each with its own marker shape so color never carries meaning alone: amber circle, cyan square.
+export const BEAMS = ['#ffd166', '#4cc9f0'];
+const GHOSTS = ['rgba(255,209,102,0.5)', 'rgba(76,201,240,0.55)'];
+const FEEDS = ['rgba(255,209,102,0.95)', 'rgba(76,201,240,0.95)'];
+const SHAPES = ['circle', 'square'];
+function shapePath(ctx, kind, x, y, r) {
+  ctx.beginPath();
+  if (kind === 'square') ctx.rect(x - r * 0.86, y - r * 0.86, r * 1.72, r * 1.72);
+  else ctx.arc(x, y, r, 0, 7);
+}
 
 export const isMirror = (c) => c.type === MIRROR && !c.fixed;
 export const startState = (g) => Int8Array.from(g.cells, (c) => (isMirror(c) ? c.rot : UNDECIDED));
@@ -21,6 +32,7 @@ export function drawBoard(canvas, g, decided, { focus = -1, fadeUnreached = true
   const ctx = canvas.getContext('2d');
   const W = canvas.width, cell = W / g.w, cx = (x) => (x + 0.5) * cell, cy = (y) => (y + 0.5) * cell;
   const t = traceGhost(g, decided);
+  const multi = g.cells.some((c) => (c.type === EMITTER || c.type === TARGET) && colorOf(c) > 0);
   // with every mirror decided there's no "might": an unlit target is just unlit, not ruled out
   if (!g.cells.some((c, i) => isMirror(c) && decided[i] === UNDECIDED)) ghosts = false;
   ctx.fillStyle = COLORS.bg; ctx.fillRect(0, 0, W, canvas.height);
@@ -32,18 +44,19 @@ export function drawBoard(canvas, g, decided, { focus = -1, fadeUnreached = true
   ctx.strokeStyle = COLORS.ghost; ctx.lineWidth = Math.max(1.5, cell * 0.04); ctx.setLineDash([cell * 0.09, cell * 0.09]);
   // feedTarget: show only light that can still reach that target; the rest is drawn faintly
   const feed = feedTarget >= 0 ? feedEdges(g, decided, feedTarget) : null;
-  const feeds = (s) => !feed || feed.has(segEdge(g, s));
-  const dim = (s, a) => { ctx.globalAlpha = feeds(s) ? a : a * 0.1; line(s); };
-  if (ghosts) t.segments.filter((s) => s.ghost && !(feed && feeds(s))).forEach((s) => dim(s, 1));
+  const feedColor = feedTarget >= 0 ? colorOf(g.cells[feedTarget]) : -1;
+  const feeds = (s) => !feed || (s.color === feedColor && feed.has(segEdge(g, s)));
+  const dim = (s, a, col) => { ctx.globalAlpha = feeds(s) ? a : a * 0.1; ctx.strokeStyle = col[s.color] || col[0]; line(s); };
+  if (ghosts) t.segments.filter((s) => s.ghost && !(feed && feeds(s))).forEach((s) => dim(s, 1, GHOSTS));
   if (ghosts && feed) { // the focused target's supply lines: brighter and thicker than ordinary ghost light
-    ctx.globalAlpha = 1; ctx.strokeStyle = 'rgba(255,209,102,0.95)'; ctx.lineWidth = Math.max(2, cell * 0.06);
-    t.segments.filter((s) => s.ghost && feeds(s)).forEach(line);
+    ctx.globalAlpha = 1; ctx.lineWidth = Math.max(2, cell * 0.06);
+    t.segments.filter((s) => s.ghost && feeds(s)).forEach((s) => { ctx.strokeStyle = FEEDS[s.color] || FEEDS[0]; line(s); });
   }
   ctx.globalAlpha = 1;
   ctx.setLineDash([]);
   for (const [w, a] of [[0.26, 0.12], [0.13, 0.25], [0.055, 1]]) {
-    ctx.globalAlpha = a; ctx.lineWidth = Math.max(1.5, cell * w); ctx.strokeStyle = COLORS.beam;
-    t.segments.filter((s) => !s.ghost).forEach((s) => dim(s, a));
+    ctx.globalAlpha = a; ctx.lineWidth = Math.max(1.5, cell * w);
+    t.segments.filter((s) => !s.ghost).forEach((s) => dim(s, a, BEAMS));
   }
   ctx.globalAlpha = 1;
   g.cells.forEach((c, i) => {
@@ -63,23 +76,36 @@ export function drawBoard(canvas, g, decided, { focus = -1, fadeUnreached = true
       ctx.fillStyle = '#2a3140'; roundRect(ctx, px - h, py - h, 2 * h, 2 * h, cell * 0.08); ctx.fill();
       ctx.strokeStyle = '#4a5468'; ctx.lineWidth = Math.max(1, cell * 0.02); ctx.stroke();
       const tip = r * 0.95, back = r * 0.15, wide = r * 0.62;
-      ctx.save(); ctx.shadowColor = COLORS.beam; ctx.shadowBlur = cell * 0.25;
-      ctx.fillStyle = COLORS.beam; ctx.beginPath();
+      const lens = BEAMS[colorOf(c)] || BEAMS[0];
+      ctx.save(); ctx.shadowColor = lens; ctx.shadowBlur = cell * 0.25;
+      ctx.fillStyle = lens; ctx.beginPath();
       ctx.moveTo(px + DX[d] * tip, py + DY[d] * tip);
       ctx.lineTo(px - DX[d] * back + DX[(d + 1) % 4] * wide, py - DY[d] * back + DY[(d + 1) % 4] * wide);
       ctx.lineTo(px - DX[d] * back + DX[(d + 3) % 4] * wide, py - DY[d] * back + DY[(d + 3) % 4] * wide);
       ctx.closePath(); ctx.fill(); ctx.restore();
+      if (multi) { ctx.fillStyle = '#171b24'; shapePath(ctx, SHAPES[colorOf(c)], px - DX[d] * r * 0.05, py - DY[d] * r * 0.05, r * 0.17); ctx.fill(); }
+    } else if (c.type === FILTER) { // a tinted glass pane: only its own color gets through
+      const col = BEAMS[colorOf(c)] || BEAMS[0], m = cell * 0.16;
+      ctx.globalAlpha = 0.22; ctx.fillStyle = col; roundRect(ctx, x * cell + m, y * cell + m, cell - 2 * m, cell - 2 * m, cell * 0.06); ctx.fill();
+      ctx.globalAlpha = 1; ctx.strokeStyle = col; ctx.lineWidth = cell * 0.035; ctx.stroke();
+      ctx.lineWidth = cell * 0.045; shapePath(ctx, SHAPES[colorOf(c)], px, py, r * 0.26); ctx.stroke();
+      ctx.strokeStyle = '#ffffff'; ctx.globalAlpha = 0.45; ctx.lineWidth = cell * 0.03;
+      const g0 = x * cell + m, h0 = y * cell + m;
+      ctx.beginPath(); ctx.moveTo(g0 + cell * 0.07, h0 + cell * 0.2); ctx.lineTo(g0 + cell * 0.2, h0 + cell * 0.07); ctx.stroke();
+      ctx.globalAlpha = 1;
     } else if (c.type === TARGET) { // a socket: dark well, ring, and a core that glows green when lit
       const real = t.litReal.has(i), maybe = ghosts ? t.lit.has(i) : true;
-      const ring = real ? COLORS.lit : !ghosts ? '#9aa3b2' : maybe ? COLORS.beam : COLORS.dead;
-      ctx.fillStyle = '#0b0e14'; ctx.beginPath(); ctx.arc(px, py, r * 0.78, 0, 7); ctx.fill();
+      const own = BEAMS[colorOf(c)] || BEAMS[0], shape = multi ? SHAPES[colorOf(c)] : 'circle';
+      const ring = real ? COLORS.lit : !ghosts ? '#9aa3b2' : maybe ? own : COLORS.dead;
+      ctx.fillStyle = '#0b0e14'; shapePath(ctx, shape, px, py, r * 0.78); ctx.fill();
       ctx.save();
       if (real) { ctx.shadowColor = COLORS.lit; ctx.shadowBlur = cell * 0.35; }
       ctx.lineWidth = cell * 0.065; ctx.strokeStyle = ring;
       ctx.setLineDash(!real && ghosts && maybe ? [cell * 0.08, cell * 0.06] : []);
-      ctx.beginPath(); ctx.arc(px, py, r * 0.7, 0, 7); ctx.stroke(); ctx.setLineDash([]);
+      shapePath(ctx, shape, px, py, r * 0.7); ctx.stroke(); ctx.setLineDash([]);
+      if (multi && real) { ctx.strokeStyle = own; ctx.lineWidth = cell * 0.03; shapePath(ctx, shape, px, py, r * 0.88); ctx.stroke(); }
       ctx.fillStyle = real ? COLORS.lit : ring; ctx.globalAlpha = real ? 1 : 0.55;
-      ctx.beginPath(); ctx.arc(px, py, r * (real ? 0.36 : 0.16), 0, 7); ctx.fill();
+      shapePath(ctx, shape, px, py, r * (real ? 0.36 : 0.16)); ctx.fill();
       ctx.restore();
       if (!maybe) { // no beam, not even a ghost, reaches it: cross it out
         ctx.strokeStyle = COLORS.dead; ctx.lineWidth = cell * 0.06; ctx.beginPath();

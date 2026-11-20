@@ -15,6 +15,10 @@ export function parseBoard(rows) {
     else if (ch === 'o') c.type = 'target';
     else if (ch === '/' || ch === '\\') { c.type = 'mirror'; c.rot = ch === '/' ? 0 : 1; }
     else if ('^>v<'.includes(ch)) { c.type = 'emitter'; c.dir = '^>v<'.indexOf(ch); }
+    // second color (cyan): emitters URDL, target O; filters f (amber) and F (cyan)
+    else if ('URDL'.includes(ch)) { c.type = 'emitter'; c.dir = 'URDL'.indexOf(ch); c.color = 1; }
+    else if (ch === 'O') { c.type = 'target'; c.color = 1; }
+    else if (ch === 'f' || ch === 'F') { c.type = 'filter'; c.color = ch === 'F' ? 1 : 0; }
   }));
   return g;
 }

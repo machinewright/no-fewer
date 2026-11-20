@@ -19,7 +19,7 @@ export function deduceRounds(g) {
   const flips = mirrors.filter((i) => d[i] !== -1 && d[i] !== g.cells[i].rot).length;
   return { rounds, flips, mirrors: mirrors.length };
 }
-export const enc = (g) => { const r = []; for (let y = 0; y < g.h; y++) r.push(g.cells.slice(y * g.w, (y + 1) * g.w).map((c) => c.type === 'empty' ? '.' : c.type === 'wall' ? '#' : c.type === 'target' ? 'o' : c.type === 'mirror' ? (c.rot ? '\\' : '/') : '^>v<'[c.dir]).join('')); return r; };
+export const enc = (g) => { const r = []; for (let y = 0; y < g.h; y++) r.push(g.cells.slice(y * g.w, (y + 1) * g.w).map((c) => c.type === 'empty' ? '.' : c.type === 'wall' ? '#' : c.type === 'target' ? (c.color ? 'O' : 'o') : c.type === 'filter' ? (c.color ? 'F' : 'f') : c.type === 'mirror' ? (c.rot ? '\\' : '/') : (c.color ? 'URDL' : '^>v<')[c.dir]).join('')); return r; };
 if (import.meta.url === `file://${process.argv[1]}`) {
   const L = +process.argv[2], N = +(process.argv[3] || 60);
   for (let s = 1; s <= N; s++) {

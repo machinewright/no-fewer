@@ -22,7 +22,7 @@ async def main():
           <div style="flex:1;padding:0 40px 0 72px;color:#1f2430">
             <div style="font:650 84px/1.05 S;letter-spacing:-1.5px">No Fewer</div>
             <div style="font:400 30px/1.4 S;color:#3d4452;margin-top:24px">A puzzle game where you don't solve the puzzle. You prove nobody can solve it in fewer flips.</div>
-            <div style="font:500 20px/1.4 I;color:#646b78;margin-top:30px">20 levels in the browser · Machinewright</div>
+            <div style="font:500 20px/1.4 I;color:#646b78;margin-top:30px">22 levels in the browser · Machinewright</div>
           </div>
           <img src="data:image/png;base64,{base64.b64encode(png).decode()}" style="width:520px;height:520px;margin-right:55px;border-radius:16px;box-shadow:0 12px 30px -12px rgba(20,24,33,.5)">
         </body>''')
