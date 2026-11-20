@@ -22,3 +22,5 @@ solution is shorter than par (a lower bound), not what a solution is.
 
 Publishing: `bash scripts/publish.sh` (gh: creates machinewright/no-fewer, pushes, makes it public, turns on Pages;
 `PRIVATE=1` only pushes). `scripts/og.py` renders og.png (needs the local server on 8772).
+Rechecked 2026-11-21 (extended search): FALLMATCH and It Tries (itch.io) prove their par with a solver, but the player
+still solves; Move Count and similar are fewest-move puzzles. No game found where the player proves the lower bound.
