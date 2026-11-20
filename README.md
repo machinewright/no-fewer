@@ -6,7 +6,7 @@ A puzzle where you don't solve the board: you prove that its best solution can't
 that must flip or must stay. A claim is accepted only if the opposite choice leaves a target unreachable even in
 "ghost light" (every unclaimed mirror sends light both ways). Follow-up idea to the essay in ../proving-par.
 
-Status: v1.0 candidate (2026-11-21): 22 levels (17-22 with two colors, 21-22 with filters); tap a target to see only the light that could reach it
+Status: v1.0 candidate (2026-11-21): daily puzzle (src/daily.js; generated in the browser, verified provable, ~15 ms worst case); 22 levels (17-22 with two colors, 21-22 with filters); tap a target to see only the light that could reach it
 (src/feed.js, tested against brute force). v0.3 (2026-11-21): the essays' look (fonts, art, light page), select a mirror then claim it, phone layout. Not published.
 - v0.2: graded levels from build-levels.mjs (lesson hints on 1-4; levels 4, 7, 10, 13 can only start with
   "must stay" claims), possible light shown by default (toggle), wrong claims shown as evidence, stars by mistakes.

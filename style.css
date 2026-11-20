@@ -63,3 +63,4 @@ footer { margin-top: 3em; color: var(--muted); font-size: 14.5px; border-top: 1p
 @media (hover: none) { kbd { display: none; } }
 .msg:empty { min-height: 0; margin: 0; }
 .levels button.daily { padding-left: 16px; padding-right: 16px; margin-right: 8px; }
+.levels-note { color: #343a47; margin: -0.6em 0 1.4em; max-width: 680px; }
