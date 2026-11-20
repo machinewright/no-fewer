@@ -3,51 +3,80 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Prove it (prototype)</title>
+<title>Prove it: a puzzle about proving the minimum</title>
+<meta name="description" content="A puzzle game where you don't solve the puzzle. You prove that nobody can solve it in fewer moves.">
 <link rel="icon" href="data:,">
-<style>
-  body { margin: 0; background: #0d1017; color: #d8dee9; font: 16px/1.5 system-ui, sans-serif; }
-  main { max-width: 560px; margin: 0 auto; padding: 18px 14px 60px; }
-  h1 { font-size: 1.5em; margin: 0.2em 0; }
-  .rules { color: #a7afbd; font-size: 15px; }
-  .rules b { color: #d8dee9; }
-  canvas { width: 100%; display: block; border-radius: 8px; touch-action: manipulation; cursor: pointer; }
-  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
-  button { font: inherit; font-size: 15px; background: #222a38; color: #d8dee9; border: 1px solid #3a4558; border-radius: 8px; padding: 6px 12px; cursor: pointer; }
-  button[aria-pressed="true"] { background: #3a4a63; border-color: #8ec9ff; }
-  #goal { font-size: 18px; margin: 8px 0; }
-  #msg { min-height: 3em; }
-  .hint { background: #171d29; border-left: 3px solid #8ec9ff; padding: 8px 12px; border-radius: 4px; font-size: 15px; }
-  .good { color: #7ef0a8; } .bad { color: #ff8a80; } .note { color: #8b93a1; font-size: 14px; }
-</style>
+<link rel="preload" href="fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <main>
-<h1>Prove it <span class="note">prototype</span></h1>
-<p class="rules">Each level is a mirror puzzle whose best solution is known. You don't solve it: you
-<b>prove that nothing shorter exists</b>. Claim that a mirror <b>must flip</b> or <b>must stay</b>. A claim is accepted
-only if the opposite would leave some target with no light at all, even though every mirror you haven't claimed may send
-light <b>both ways</b>. Prove as many forced flips as the best solution has, and no solution can be shorter.</p>
-<div class="row" id="levels"></div>
-<p id="goal"></p>
-<p id="hint" class="hint"></p>
-<div class="row" role="group" aria-label="Claim">
-  <button id="t-flip" aria-pressed="true">Claim: must flip</button>
-  <button id="t-stay" aria-pressed="false">Claim: must stay</button>
-</div>
-<canvas id="c" tabindex="0" aria-label="Puzzle board"></canvas>
-<p id="msg" role="status" aria-live="polite"></p>
-<div class="row">
-    <button id="undo">Undo</button>
-  <button id="restart">Restart level</button>
-  <button id="next" hidden>Next level</button>
-  <label class="note"><input type="checkbox" id="ghosts"> Show possible light (dashed)</label>
-</div>
-<p class="note" id="score"></p>
-<p class="note">Solid light is certain. Dashed light is light that <i>might</i> get there, given your claims.
-Settled mirrors have a dot: blue, proven to flip; white, proven to stay. Unsettled mirrors show their starting tilt over a faint X. Keys: arrows, Enter, F/S to pick the claim, U to undo.<br>
-Prototype by Machinewright, an AI agent (Claude). Not published.</p>
+<header>
+  <h1>Prove it</h1>
+  <p class="dek">Each board below is a mirror puzzle that someone has already solved in the fewest flips possible.
+  You don't solve it. You prove that nobody can do it in fewer.</p>
+</header>
+
+<section class="rules" aria-labelledby="rules-h">
+  <h2 id="rules-h" class="visually-hidden">Rules</h2>
+  <ol>
+    <li>Pick a mirror and claim it <b>must flip</b> or <b>must stay</b>.</li>
+    <li>The game tests the opposite. Mirrors you haven't settled count as <b>open</b>: light may leave them either way
+      (dashed). If the opposite would leave some target with no light at all, not even dashed, your claim is proven.</li>
+    <li>Prove as many forced flips as the best solution has. Then no solution can be shorter.</li>
+  </ol>
+</section>
+
+<section class="game" aria-label="Puzzle">
+  <nav class="levels" id="levels" aria-label="Levels"></nav>
+  <div class="panel">
+    <div class="status">
+      <p id="goal" class="goal"></p>
+      <div class="meter" aria-hidden="true"><div id="meter-fill"></div></div>
+    </div>
+    <div class="board-wrap">
+      <canvas id="c" class="board" tabindex="0" role="application" aria-roledescription="board" aria-label="Puzzle board"></canvas>
+    </div>
+    <div class="side">
+      <div class="claim" role="group" aria-label="Claim the selected mirror">
+        <p id="sel" class="sel"></p>
+        <div class="controls">
+          <button id="c-flip" class="primary" disabled>Must flip <kbd>F</kbd></button>
+          <button id="c-stay" disabled>Must stay <kbd>S</kbd></button>
+        </div>
+      </div>
+      <p id="msg" class="msg" role="status" aria-live="polite"></p>
+      <p id="hint" class="hint"></p>
+      <div class="controls">
+        <button id="undo">Undo <kbd>U</kbd></button>
+        <button id="restart">Restart</button>
+        <button id="next" class="primary" hidden>Next level</button>
+      </div>
+      <label class="toggle"><input type="checkbox" id="ghosts"> Show possible light (dashed)</label>
+      <p class="note" id="score"></p>
+    </div>
+  </div>
+  <details class="key">
+    <summary>What the pieces mean</summary>
+    <ul>
+      <li><b>Lamps</b> send light out of their bright side. <b>Targets</b> glow green when solid light reaches them.</li>
+      <li>An <b>open</b> mirror shows its starting tilt over a faint X: light may leave it either way. Dashed light is light that
+        <i>might</i> get somewhere, given what's settled. A target that not even dashed light reaches is crossed out.</li>
+      <li>Settled mirrors carry a dot: blue, proven to flip; white, proven to stay.</li>
+      <li>Keys: arrows move, Enter selects, F or S claims, U undoes.</li>
+    </ul>
+  </details>
+</section>
+
+<footer>
+  <p>Why the test works, and how a computer uses the same idea to prove a puzzle's minimum:
+    <a href="https://machinewright.github.io/proving-par/">How do you know 7 is the best?</a></p>
+  <p>Made by <a href="https://machinewright.github.io/">Machinewright</a>, an AI agent (Claude). Every level's par is the exact
+    minimum, found by an exhaustive solver, and every level can be proven with the rule above.
+    <a href="https://github.com/machinewright/prove-it">Source</a>.</p>
+</footer>
 </main>
+<noscript><p>This game needs JavaScript.</p></noscript>
 <script type="module" src="game.js"></script>
 </body>
 </html>

@@ -15,7 +15,7 @@ export const allUndecided = (g) => new Int8Array(g.cells.length).fill(UNDECIDED)
 export const flipCount = (g, d) => g.cells.reduce((n, c, i) => n + (isMirror(c) && d[i] !== UNDECIDED && d[i] !== c.rot ? 1 : 0), 0);
 
 // Returns the trace so callers can describe the state in text.
-export function drawBoard(canvas, g, decided, { focus = -1, fadeUnreached = true, ghosts = true, showStart = false, settled = null } = {}) {
+export function drawBoard(canvas, g, decided, { focus = -1, fadeUnreached = true, ghosts = true, showStart = false, settled = null, selected = -1 } = {}) {
   // ghosts=false: show only certain light; undecided mirrors are drawn faintly in their starting tilt.
   const ctx = canvas.getContext('2d');
   const W = canvas.width, cell = W / g.w, cx = (x) => (x + 0.5) * cell, cy = (y) => (y + 0.5) * cell;
@@ -38,20 +38,39 @@ export function drawBoard(canvas, g, decided, { focus = -1, fadeUnreached = true
   ctx.globalAlpha = 1;
   g.cells.forEach((c, i) => {
     const x = i % g.w, y = Math.floor(i / g.w), px = cx(x), py = cy(y), r = cell * 0.34;
-    if (c.type === WALL) { ctx.fillStyle = COLORS.wall; const m = cell * 0.06; ctx.fillRect(x * cell + m, y * cell + m, cell - 2 * m, cell - 2 * m); }
-    else if (c.type === EMITTER) {
-      const d = c.dir; ctx.fillStyle = COLORS.beam; ctx.beginPath();
-      ctx.moveTo(px + DX[d] * r, py + DY[d] * r);
-      ctx.lineTo(px + DX[(d + 1) % 4] * r * 0.8 - DX[d] * r * 0.6, py + DY[(d + 1) % 4] * r * 0.8 - DY[d] * r * 0.6);
-      ctx.lineTo(px + DX[(d + 3) % 4] * r * 0.8 - DX[d] * r * 0.6, py + DY[(d + 3) % 4] * r * 0.8 - DY[d] * r * 0.6);
-      ctx.closePath(); ctx.fill();
-    } else if (c.type === TARGET) {
+    if (c.type === WALL) { // a raised block: lit top edge, shaded bottom, faint brick seams
+      const m = cell * 0.07, x0 = x * cell + m, y0 = y * cell + m, s = cell - 2 * m, rr = cell * 0.08;
+      ctx.fillStyle = '#2e3646'; roundRect(ctx, x0, y0, s, s, rr); ctx.fill();
+      ctx.fillStyle = '#3b4456'; roundRect(ctx, x0, y0, s, s * 0.82, rr); ctx.fill();
+      ctx.strokeStyle = 'rgba(18,22,31,0.55)'; ctx.lineWidth = Math.max(1, cell * 0.025);
+      ctx.beginPath(); ctx.moveTo(x0, y0 + s * 0.41); ctx.lineTo(x0 + s, y0 + s * 0.41);
+      ctx.moveTo(x0 + s * 0.5, y0); ctx.lineTo(x0 + s * 0.5, y0 + s * 0.41);
+      ctx.moveTo(x0 + s * 0.25, y0 + s * 0.41); ctx.lineTo(x0 + s * 0.25, y0 + s * 0.82);
+      ctx.moveTo(x0 + s * 0.75, y0 + s * 0.41); ctx.lineTo(x0 + s * 0.75, y0 + s * 0.82); ctx.stroke();
+    }
+    else if (c.type === EMITTER) { // a lamp: dark housing with a glowing lens on the side the light leaves
+      const d = c.dir, h = cell * 0.3;
+      ctx.fillStyle = '#2a3140'; roundRect(ctx, px - h, py - h, 2 * h, 2 * h, cell * 0.08); ctx.fill();
+      ctx.strokeStyle = '#4a5468'; ctx.lineWidth = Math.max(1, cell * 0.02); ctx.stroke();
+      const tip = r * 0.95, back = r * 0.15, wide = r * 0.62;
+      ctx.save(); ctx.shadowColor = COLORS.beam; ctx.shadowBlur = cell * 0.25;
+      ctx.fillStyle = COLORS.beam; ctx.beginPath();
+      ctx.moveTo(px + DX[d] * tip, py + DY[d] * tip);
+      ctx.lineTo(px - DX[d] * back + DX[(d + 1) % 4] * wide, py - DY[d] * back + DY[(d + 1) % 4] * wide);
+      ctx.lineTo(px - DX[d] * back + DX[(d + 3) % 4] * wide, py - DY[d] * back + DY[(d + 3) % 4] * wide);
+      ctx.closePath(); ctx.fill(); ctx.restore();
+    } else if (c.type === TARGET) { // a socket: dark well, ring, and a core that glows green when lit
       const real = t.litReal.has(i), maybe = ghosts ? t.lit.has(i) : true;
-      ctx.lineWidth = cell * 0.08;
-      ctx.strokeStyle = real ? COLORS.lit : !ghosts ? COLORS.undecided : maybe ? COLORS.beam : COLORS.dead;
-      ctx.setLineDash(real ? [] : [cell * 0.09, cell * 0.07]);
+      const ring = real ? COLORS.lit : !ghosts ? '#9aa3b2' : maybe ? COLORS.beam : COLORS.dead;
+      ctx.fillStyle = '#0b0e14'; ctx.beginPath(); ctx.arc(px, py, r * 0.78, 0, 7); ctx.fill();
+      ctx.save();
+      if (real) { ctx.shadowColor = COLORS.lit; ctx.shadowBlur = cell * 0.35; }
+      ctx.lineWidth = cell * 0.065; ctx.strokeStyle = ring;
+      ctx.setLineDash(!real && ghosts && maybe ? [cell * 0.08, cell * 0.06] : []);
       ctx.beginPath(); ctx.arc(px, py, r * 0.7, 0, 7); ctx.stroke(); ctx.setLineDash([]);
-      if (real) { ctx.fillStyle = COLORS.lit; ctx.beginPath(); ctx.arc(px, py, r * 0.32, 0, 7); ctx.fill(); }
+      ctx.fillStyle = real ? COLORS.lit : ring; ctx.globalAlpha = real ? 1 : 0.55;
+      ctx.beginPath(); ctx.arc(px, py, r * (real ? 0.36 : 0.16), 0, 7); ctx.fill();
+      ctx.restore();
       if (!maybe) { // no beam, not even a ghost, reaches it: cross it out
         ctx.strokeStyle = COLORS.dead; ctx.lineWidth = cell * 0.06; ctx.beginPath();
         ctx.moveTo(px - r * 0.42, py - r * 0.42); ctx.lineTo(px + r * 0.42, py + r * 0.42); ctx.stroke();
@@ -65,16 +84,20 @@ export function drawBoard(canvas, g, decided, { focus = -1, fadeUnreached = true
       const far = fadeUnreached && !t.reached.has(i) ? 0.3 : 1;
       if (d === UNDECIDED && !ghosts) { ctx.strokeStyle = COLORS.undecided; stroke(c.rot, 0.45, cell * 0.06); }
       else if (d === UNDECIDED && showStart) { // X, with the starting tilt stronger so "flip" and "stay" stay readable
-        ctx.strokeStyle = COLORS.undecided; stroke(c.rot ^ 1, 0.22 * far, cell * 0.035); ctx.strokeStyle = '#c3cad6'; stroke(c.rot, far, cell * 0.065);
+        ctx.strokeStyle = COLORS.undecided; stroke(c.rot ^ 1, 0.3 * far, cell * 0.035); ctx.strokeStyle = '#c3cad6'; stroke(c.rot, far, cell * 0.065);
       } else if (d === UNDECIDED) { ctx.strokeStyle = COLORS.undecided; stroke(0, 0.6 * far, cell * 0.05); stroke(1, 0.6 * far, cell * 0.05); }
       else {
         const flipped = d !== c.rot;
         ctx.strokeStyle = flipped ? COLORS.flipped : COLORS.mirror; stroke(d, far, cell * 0.09);
         const dot = showStart ? !settled || settled[i] !== UNDECIDED : flipped;
-        if (dot) { ctx.fillStyle = flipped ? COLORS.flipped : COLORS.mirror; ctx.beginPath(); ctx.arc(x * cell + cell * 0.84, y * cell + cell * 0.16, cell * 0.065, 0, 7); ctx.fill(); }
+        if (dot) { ctx.fillStyle = COLORS.flipped; ctx.beginPath(); ctx.arc(x * cell + cell * 0.84, y * cell + cell * 0.16, cell * 0.065, 0, 7); ctx.fill(); }
       }
     }
-    if (i === focus) {
+    if (i === selected) { // the mirror the player is about to claim: a solid rounded frame
+      ctx.strokeStyle = COLORS.flipped; ctx.lineWidth = Math.max(2, cell * 0.05);
+      roundRect(ctx, x * cell + cell * 0.06, y * cell + cell * 0.06, cell * 0.88, cell * 0.88, cell * 0.12); ctx.stroke();
+    }
+    if (i === focus && i !== selected) {
       ctx.strokeStyle = COLORS.focus; ctx.lineWidth = Math.max(2, cell * 0.04); ctx.setLineDash([cell * 0.1, cell * 0.06]);
       ctx.strokeRect(x * cell + cell * 0.05, y * cell + cell * 0.05, cell * 0.9, cell * 0.9); ctx.setLineDash([]);
     }
@@ -82,19 +105,30 @@ export function drawBoard(canvas, g, decided, { focus = -1, fadeUnreached = true
   return t;
 }
 
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+}
+
 // A responsive, crisp canvas for a board, with click/tap and keyboard cursor support.
 // onActivate(i) is called with the cell index when a cell is clicked or Enter/Space is pressed.
-export function makeCanvas(g, { label, onActivate } = {}) {
+// describe(i), if given, names the cell under the keyboard cursor; it becomes the canvas's accessible name while the
+// cursor is on the board, so screen readers say where the cursor is.
+export function makeCanvas(g, { label, onActivate, describe } = {}) {
   const canvas = document.createElement('canvas');
   canvas.className = 'board';
-  canvas.setAttribute('role', 'img');
+  canvas.setAttribute('role', onActivate ? 'application' : 'img');
+  if (onActivate) canvas.setAttribute('aria-roledescription', 'board');
   if (label) canvas.setAttribute('aria-label', label);
+  const where = (i) => `Mirror at column ${i % g.w + 1}, row ${Math.floor(i / g.w) + 1}`;
+  const announce = () => canvas.setAttribute('aria-label', (describe || where)(cursor));
   let redraw = () => {};
   let cursor = -1;
   const fit = () => {
     const css = canvas.getBoundingClientRect().width || 300, dpr = devicePixelRatio || 1;
     const w = Math.round(css * dpr);
-    if (canvas.width !== w) { canvas.width = w; canvas.height = Math.round(w * g.h / g.w); }
+    const h = Math.round(w * g.h / g.w);
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
     redraw();
   };
   new ResizeObserver(fit).observe(canvas);
@@ -120,10 +154,10 @@ export function makeCanvas(g, { label, onActivate } = {}) {
           const along = dx * move[0] + dy * move[1], across = Math.abs(dx * move[1] + dy * move[0]);
           if (along > 0 && along + 2 * across < bestD) { bestD = along + 2 * across; bestI = m; }
         }
-        cursor = bestI; redraw();
-      } else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onActivate(cursor); }
+        cursor = bestI; redraw(); announce();
+      } else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onActivate(cursor); announce(); }
     });
-    canvas.addEventListener('blur', () => { cursor = -1; redraw(); });
+    canvas.addEventListener('blur', () => { cursor = -1; redraw(); if (label) canvas.setAttribute('aria-label', label); });
   }
   return {
     canvas,

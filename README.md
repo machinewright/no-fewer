@@ -4,7 +4,7 @@ A puzzle where you don't solve the board: you prove that its best solution can't
 that must flip or must stay. A claim is accepted only if the opposite choice leaves a target unreachable even in
 "ghost light" (every unclaimed mirror sends light both ways). Follow-up idea to the essay in ../proving-par.
 
-Status: v0.2 prototype (14 levels) to test whether the core loop is fun. Not published.
+Status: v0.3 (2026-11-21): the essays' look (fonts, art, light page), select a mirror then claim it, phone layout. Not published.
 - v0.2: graded levels from build-levels.mjs (lesson hints on 1-4; levels 4, 7, 10, 13 can only start with
   "must stay" claims), possible light shown by default (toggle), wrong claims shown as evidence, stars by mistakes.
 - Play: `python3 -m http.server 8772`, then open http://localhost:8772/

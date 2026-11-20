@@ -1,4 +1,6 @@
 // "Prove it": prove a mirror puzzle's par is a lower bound by claiming forced mirrors.
+// Select a mirror, then claim it must flip or must stay. A claim is accepted when the opposite choice leaves some target
+// unreachable even in ghost light (every open mirror sends light both ways).
 import { parseBoard } from './src/boards.js';
 import { drawBoard, isMirror } from './src/view.js';
 import { traceGhost, UNDECIDED } from './src/ghost.js';
@@ -8,119 +10,153 @@ import { LEVELS } from './src/puzzles.js';
 const $ = (id) => document.getElementById(id);
 const canvas = $('c');
 const KEY = 'prove-it-v2';
-let lv, g, goal, claims, history, tool = 'flip', show = null, wrong = 0, won = false, cursor = -1;
+let lv, g, goal, claims, history, show = null, wrong = 0, won = false, cursor = -1, sel = -1;
 let ghostsOn = localStorage.getItem(KEY + '-ghosts') !== '0';
 
 function loadBest() {
   try { const b = JSON.parse(localStorage.getItem(KEY) || '{}'); return b && typeof b === 'object' ? b : {}; } catch { return {}; }
 }
 export const starsFor = (w) => (w === 0 ? 3 : w <= 2 ? 2 : 1);
+const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+const where = (i) => `column ${i % g.w + 1}, row ${Math.floor(i / g.w) + 1}`;
+const tilt = (r) => (r ? 'leaning \\' : 'leaning /');
 
 function load(k) {
   lv = k; g = parseBoard(LEVELS[k].rows); goal = targets(g);
   claims = new Int8Array(g.cells.length).fill(UNDECIDED); history = [];
-  show = null; wrong = 0; won = false; cursor = -1;
-  $('goal').innerHTML = `Level ${k + 1} of ${LEVELS.length}. Best solution: <b>${LEVELS[k].par} flip${LEVELS[k].par > 1 ? 's' : ''}</b>. Prove no solution uses fewer.`;
+  show = null; wrong = 0; won = false; cursor = -1; sel = -1;
   $('hint').innerHTML = LEVELS[k].hint || '';
   $('hint').hidden = !LEVELS[k].hint;
   $('next').hidden = true;
-  msg(k === 0 ? 'Click the mirror you think must flip.' : 'Claim a mirror that must flip, or one that must stay.');
-  levelButtons(); draw(); score();
+  msg(k === 0 ? 'Select the mirror you think must flip.' : 'Select a mirror you can prove must flip or must stay.');
+  levelButtons(); update();
 }
 
-// Claimed mirrors are fixed; unclaimed ones are undecided (light goes both ways).
+// Claimed mirrors are fixed; unclaimed ones are open (light goes both ways).
 const darkTargets = (d) => { const t = traceGhost(g, d); return goal.filter((i) => !t.lit.has(i)); };
 const flipsClaimed = () => g.cells.filter((c, i) => isMirror(c) && claims[i] !== UNDECIDED && claims[i] !== c.rot).length;
+const staysClaimed = () => g.cells.filter((c, i) => isMirror(c) && claims[i] === c.rot).length;
 
-function claim(i) {
-  if (won || i < 0 || !isMirror(g.cells[i])) return;
-  if (claims[i] !== UNDECIDED) { msg('Already settled. Use Undo to take a claim back.'); return; }
-  const c = g.cells[i], flip = tool === 'flip';
-  const want = flip ? c.rot ^ 1 : c.rot;  // the claimed state
+function select(i) {
+  if (won || i < 0) return;
+  show = null;
+  const c = g.cells[i];
+  if (!isMirror(c)) { sel = -1; msg('Only mirrors can be claimed.'); return update(); }
+  if (claims[i] !== UNDECIDED) {
+    sel = -1; msg(`Already settled: this mirror ${claims[i] === c.rot ? 'must stay' : 'must flip'}. Undo takes a claim back.`);
+    return update();
+  }
+  sel = i; msg(''); update();
+}
+
+function claim(flip) {
+  if (won || sel < 0) return;
+  const i = sel, c = g.cells[i];
+  const want = flip ? c.rot ^ 1 : c.rot; // the claimed state
   const test = claims.slice(); test[i] = want ^ 1; // the opposite choice
-  if (!darkTargets(test).length) {
+  const dark = darkTargets(test);
+  if (!dark.length) {
     wrong++;
     show = { d: test, focus: i };
     msg(`<span class="bad">Not proven.</span> Shown: if this mirror ${flip ? 'stayed' : 'flipped'}, light could still reach `
-      + `every target (solid or dashed), given what's settled so far. Click the board to go on.`);
-    draw(); score(); return;
+      + `every target (solid or dashed), given what's settled so far.`);
+    return update();
   }
   history.push(claims.slice());
-  claims[i] = want;
+  claims[i] = want; sel = -1;
   show = { d: test, focus: i }; // the evidence: the opposite choice, in ghost light
   const n = flipsClaimed(), par = LEVELS[lv].par;
   if (n >= par) return win(n, par);
   msg(`<span class="good">Proven: must ${flip ? 'flip' : 'stay'}.</span> Shown: if it ${flip ? 'stayed' : 'flipped'}, the crossed-out `
-    + `target would get no light at all. Forced flips: <b>${n} of ${par}</b>.`);
-  draw(); score();
+    + `target would get no light at all.`);
+  update();
 }
 
 function win(n, par) {
-  won = true;
+  won = true; sel = -1;
   const real = claims.slice();
   g.cells.forEach((cc, j) => { if (isMirror(cc) && real[j] === UNDECIDED) real[j] = cc.rot; });
   const solves = goal.every((k) => traceGhost(g, real).litReal.has(k));
-  // Deduction picks at least par flips, and a par-flip solution exists, so these flips are exactly a best solution
-  // whenever every target lights up; otherwise the remaining unclaimed mirrors still had a role we didn't settle.
+  // Deduction forces at least par flips and a par-flip solution exists, so when the forced flips alone light every
+  // target they are exactly a best solution.
   const st = starsFor(wrong);
   msg(`<span class="good">Proven. ${'★'.repeat(st)}${'☆'.repeat(3 - st)}</span> Every solution must make ${n === 1 ? 'this flip' : `these ${n} flips`}, `
-    + `so none can use fewer than ${par}.` + (solves ? ` Shown: making exactly ${n === 1 ? 'that flip' : 'these flips'} solves the puzzle.` : ''));
+    + `so none can use fewer than ${par}.` + (solves ? ` Shown: making exactly ${n === 1 ? 'that flip' : 'those flips'} solves the puzzle.` : ''));
   show = { d: real, focus: -1 };
   const best = loadBest();
   if (!(best[lv] >= st)) { best[lv] = st; localStorage.setItem(KEY, JSON.stringify(best)); }
   $('next').hidden = lv + 1 >= LEVELS.length;
-  levelButtons(); draw(); score();
+  levelButtons(); update();
+  if (!$('next').hidden) $('next').focus({ preventScroll: true });
+}
+
+function update() {
+  const par = LEVELS[lv].par, n = flipsClaimed();
+  $('goal').innerHTML = `Level ${lv + 1}: best solution <b>${plural(par, 'flip')}</b>. Forced flips proven: <b>${n} of ${par}</b>`;
+  $('meter-fill').style.width = `${Math.min(100, (100 * n) / par)}%`;
+  const s = sel >= 0;
+  $('c-flip').disabled = !s; $('c-stay').disabled = !s;
+  $('sel').textContent = won ? '' : s ? `Selected: the mirror at ${where(sel)}, ${tilt(g.cells[sel].rot)} at the start.` : 'No mirror selected.';
+  $('score').textContent = wrong ? `Claims not proven: ${wrong}.` : '';
+  draw();
 }
 
 function draw() {
   const css = canvas.getBoundingClientRect().width || 300, dpr = devicePixelRatio || 1;
-  canvas.width = Math.round(css * dpr); canvas.height = Math.round(css * dpr * g.h / g.w);
-  const ghosts = show ? true : ghostsOn;
-  drawBoard(canvas, g, show ? show.d : claims, { focus: show ? show.focus : cursor, fadeUnreached: false, ghosts, showStart: true, settled: claims });
+  const w = Math.round(css * dpr), h = Math.round((css * dpr * g.h) / g.w);
+  if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+  drawBoard(canvas, g, show ? show.d : claims, {
+    focus: show && show.focus >= 0 ? show.focus : cursor, selected: show ? -1 : sel, fadeUnreached: false,
+    ghosts: show ? true : ghostsOn, showStart: true, settled: claims,
+  });
   canvas.setAttribute('aria-label', describe());
 }
 function describe() {
-  const n = flipsClaimed(), stays = g.cells.filter((c, i) => isMirror(c) && claims[i] === c.rot).length;
-  let s = `Board ${g.w} by ${g.h}. Settled: ${n} must flip, ${stays} must stay.`;
-  if (cursor >= 0) {
-    const c = g.cells[cursor];
-    s += ` Cursor at column ${cursor % g.w + 1}, row ${Math.floor(cursor / g.w) + 1}: ${c.type}`
-      + (isMirror(c) ? `, starts ${c.rot ? 'backslash' : 'slash'}, ${claims[cursor] === UNDECIDED ? 'unclaimed' : claims[cursor] === c.rot ? 'must stay' : 'must flip'}` : '') + '.';
+  let s = `Board ${g.w} by ${g.h}. Settled: ${flipsClaimed()} must flip, ${staysClaimed()} must stay.`;
+  const i = cursor >= 0 ? cursor : sel;
+  if (i >= 0) {
+    const c = g.cells[i];
+    s += ` ${i === sel ? 'Selected' : 'Cursor'}: column ${i % g.w + 1}, row ${Math.floor(i / g.w) + 1}, ${c.type === 'empty' ? 'empty' : c.type}`
+      + (isMirror(c) ? `, starts ${c.rot ? 'backslash' : 'slash'}, ${claims[i] === UNDECIDED ? 'open' : claims[i] === c.rot ? 'must stay' : 'must flip'}` : '') + '.';
   }
   return s;
 }
 function msg(h) { $('msg').innerHTML = h; }
-function score() { $('score').textContent = `Wrong claims: ${wrong}. ${wrong === 0 ? 'No mistakes so far.' : ''}`; }
 function levelButtons() {
   const best = loadBest();
   [...$('levels').children].forEach((b, i) => {
-    b.setAttribute('aria-pressed', String(i === lv));
-    b.textContent = `${i + 1}${best[i] ? ' ' + '★'.repeat(best[i]) : ''}`;
+    b.setAttribute('aria-current', String(i === lv));
+    b.innerHTML = `${i + 1}${best[i] ? `<span class="stars">${'★'.repeat(best[i])}</span>` : ''}`;
+    b.setAttribute('aria-label', `Level ${i + 1}${best[i] ? `, ${best[i]} of 3 stars` : ''}`);
   });
 }
 
 canvas.addEventListener('click', (e) => {
   const r = canvas.getBoundingClientRect();
-  const x = Math.floor((e.clientX - r.left) / r.width * g.w), y = Math.floor((e.clientY - r.top) / r.height * g.h);
-  if (won) return;
-  if (show) { show = null; draw(); }
-  if (x >= 0 && y >= 0 && x < g.w && y < g.h) claim(y * g.w + x);
+  const x = Math.floor(((e.clientX - r.left) / r.width) * g.w), y = Math.floor(((e.clientY - r.top) / r.height) * g.h);
+  cursor = -1;
+  if (x >= 0 && y >= 0 && x < g.w && y < g.h) select(y * g.w + x);
 });
 canvas.addEventListener('keydown', (e) => {
   const mv = { ArrowRight: [1, 0], ArrowLeft: [-1, 0], ArrowDown: [0, 1], ArrowUp: [0, -1] }[e.key];
   if (mv) {
-    e.preventDefault(); if (cursor < 0) cursor = 0;
-    const x = Math.min(g.w - 1, Math.max(0, cursor % g.w + mv[0])), y = Math.min(g.h - 1, Math.max(0, Math.floor(cursor / g.w) + mv[1]));
+    e.preventDefault(); if (cursor < 0) cursor = sel >= 0 ? sel : 0;
+    const x = Math.min(g.w - 1, Math.max(0, (cursor % g.w) + mv[0])), y = Math.min(g.h - 1, Math.max(0, Math.floor(cursor / g.w) + mv[1]));
     cursor = y * g.w + x; if (!won) show = null; draw();
-  } else if ((e.key === 'Enter' || e.key === ' ') && cursor >= 0) { e.preventDefault(); if (!won) { show = null; claim(cursor); } }
-  else if (e.key === 'f') setTool('flip'); else if (e.key === 's') setTool('stay');
-  else if (e.key === 'u') undo();
+  } else if ((e.key === 'Enter' || e.key === ' ') && cursor >= 0) { e.preventDefault(); select(cursor); }
+});
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey || e.metaKey || e.altKey || e.target.matches('input, textarea')) return;
+  const k = e.key.toLowerCase();
+  if (k === 'f') claim(true); else if (k === 's') claim(false); else if (k === 'u') undo();
 });
 canvas.addEventListener('blur', () => { cursor = -1; draw(); });
-function setTool(t) { tool = t; $('t-flip').setAttribute('aria-pressed', String(t === 'flip')); $('t-stay').setAttribute('aria-pressed', String(t === 'stay')); }
-function undo() { if (!history.length || won) return; claims = history.pop(); show = null; msg('Undone.'); draw(); }
-$('t-flip').onclick = () => setTool('flip');
-$('t-stay').onclick = () => setTool('stay');
+function undo() {
+  if (!history.length || won) return;
+  claims = history.pop(); show = null; sel = -1; msg('Undone.'); update();
+}
+$('c-flip').onclick = () => claim(true);
+$('c-stay').onclick = () => claim(false);
 $('undo').onclick = undo;
 $('restart').onclick = () => load(lv);
 $('next').onclick = () => load(lv + 1);
