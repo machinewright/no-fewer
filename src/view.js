@@ -66,6 +66,7 @@ export function drawBoard(canvas, g, decided, { focus = -1, fadeUnreached = true
     t.segments.filter((s) => !s.ghost).forEach((s) => dim(s, a, BEAMS));
   }
   ctx.globalAlpha = 1;
+  ctx.lineDashOffset = 0; // beams anchor their dashes; rings and frames below start at zero
   g.cells.forEach((c, i) => {
     const x = i % g.w, y = Math.floor(i / g.w), px = cx(x), py = cy(y), r = cell * 0.34;
     if (c.type === WALL) { // a raised block: lit top edge, shaded bottom, faint brick seams
