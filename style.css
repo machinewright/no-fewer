@@ -62,3 +62,4 @@ footer { margin-top: 3em; color: var(--muted); font-size: 14.5px; border-top: 1p
 @media (prefers-reduced-motion: reduce) { #meter-fill { transition: none; } }
 @media (hover: none) { kbd { display: none; } }
 .msg:empty { min-height: 0; margin: 0; }
+.levels button.daily { padding-left: 16px; padding-right: 16px; margin-right: 8px; }

@@ -1,0 +1,2 @@
+// Board -> rows encoding (the inverse of parseBoard in boards.js).
+export const enc = (g) => { const r = []; for (let y = 0; y < g.h; y++) r.push(g.cells.slice(y * g.w, (y + 1) * g.w).map((c) => c.type === 'empty' ? '.' : c.type === 'wall' ? '#' : c.type === 'target' ? (c.color ? 'O' : 'o') : c.type === 'filter' ? (c.color ? 'F' : 'f') : c.type === 'mirror' ? (c.rot ? '\\' : '/') : (c.color ? 'URDL' : '^>v<')[c.dir]).join('')); return r; };

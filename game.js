@@ -6,11 +6,14 @@ import { drawBoard, isMirror } from './src/view.js';
 import { traceGhost, UNDECIDED } from './src/ghost.js';
 import { targets } from './src/engine.js';
 import { LEVELS } from './src/puzzles.js';
+import { daily } from './src/daily.js';
+import { streak, dateKey } from './src/generator.js';
 
 const $ = (id) => document.getElementById(id);
 const canvas = $('c');
 const KEY = 'prove-it-v2';
-let lv, g, goal, claims, history, show = null, wrong = 0, won = false, cursor = -1, sel = -1, ft = -1; // ft: the target whose light is shown alone
+const DAILY = -1; // lv for the daily puzzle
+let lv, today = null, g, goal, claims, history, show = null, wrong = 0, won = false, cursor = -1, sel = -1, ft = -1; // ft: the target whose light is shown alone
 // Storage can be missing or blocked (private modes, sandboxed frames): the game must still run.
 const store = {
   get: (k) => { try { return localStorage.getItem(k); } catch { return null; } },
@@ -26,12 +29,18 @@ const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
 const where = (i) => `column ${i % g.w + 1}, row ${Math.floor(i / g.w) + 1}`;
 const tilt = (r) => (r ? 'starts as \\' : 'starts as /');
 
+const level = () => (lv === DAILY ? today : LEVELS[lv]);
+function dailyBest() { try { const b = JSON.parse(store.get(KEY + '-daily') || '{}'); return b && typeof b === 'object' ? b : {}; } catch { return {}; } }
+const dayName = (key) => new Date(key + 'T12:00:00').toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' });
+
 function load(k) {
-  lv = k; g = parseBoard(LEVELS[k].rows); goal = targets(g);
+  if (k === DAILY) today = daily(new Date()); // recomputed on every load, so a page left open past midnight moves on
+  if (k === DAILY && !today) k = 0;
+  lv = k; g = parseBoard(level().rows); goal = targets(g);
   claims = new Int8Array(g.cells.length).fill(UNDECIDED); history = [];
   show = null; wrong = 0; won = false; cursor = -1; sel = -1; ft = -1;
-  $('hint').innerHTML = LEVELS[k].hint || '';
-  $('hint').hidden = !LEVELS[k].hint;
+  $('hint').innerHTML = level().hint || '';
+  $('hint').hidden = !level().hint;
   $('next').hidden = true;
   msg(k === 0 ? 'Select the mirror you think must flip.' : 'Select a mirror you can prove must flip or must stay.');
   levelButtons(); update();
@@ -75,7 +84,7 @@ function claim(flip) {
   history.push(claims.slice());
   claims[i] = want; sel = -1;
   show = { d: test, focus: i }; // the evidence: the opposite choice, in ghost light
-  const n = flipsClaimed(), par = LEVELS[lv].par;
+  const n = flipsClaimed(), par = level().par;
   if (n >= par) return win(n, par);
   msg(`<span class="good">Proven: must ${flip ? 'flip' : 'stay'}.</span> For a moment the board shows why: if it ${flip ? 'stayed' : 'flipped'}, the crossed-out `
     + `target would get no light at all.`);
@@ -94,18 +103,29 @@ function win(n, par) {
   const st = starsFor(wrong);
   msg(`<span class="good">Proven. ${'★'.repeat(st)}${'☆'.repeat(3 - st)}</span> Every solution must make ${n === 1 ? 'this flip' : `these ${n} flips`}, `
     + `so none can use fewer than ${par}.` + (solves ? ` Shown: making exactly ${n === 1 ? 'that flip' : 'those flips'} solves the puzzle.` : '')
-    + (lv + 1 === LEVELS.length ? ' That was the last level. Thanks for playing.' : ''));
+    + (lv + 1 === LEVELS.length ? ' That was the last level. Thanks for playing.' : '')
+    + (lv === DAILY ? ` ${dailyDone(st)}` : ''));
   show = { d: real, focus: -1 };
-  const best = loadBest();
-  if (!(best[lv] >= st)) { best[lv] = st; store.set(KEY, JSON.stringify(best)); }
-  $('next').hidden = lv + 1 >= LEVELS.length;
+  if (lv !== DAILY) {
+    const best = loadBest();
+    if (!(best[lv] >= st)) { best[lv] = st; store.set(KEY, JSON.stringify(best)); }
+  }
+  $('next').hidden = lv === DAILY || lv + 1 >= LEVELS.length;
   levelButtons(); update();
   if (!$('next').hidden) $('next').focus({ preventScroll: true });
 }
 
+function dailyDone(st) {
+  const b = dailyBest();
+  if (!(b[today.key] >= st)) { b[today.key] = st; store.set(KEY + '-daily', JSON.stringify(b)); }
+  const n = streak(Object.keys(b));
+  return `Daily puzzle done${n > 1 ? `: ${n} days in a row` : ''}. A new board comes at midnight.`;
+}
+
 function update() {
-  const par = LEVELS[lv].par, n = flipsClaimed();
-  $('goal').innerHTML = `Level ${lv + 1}. Fewest flips: <b>${par}</b>. Forced flips proven: <b>${n} of ${par}</b>`
+  const par = level().par, n = flipsClaimed();
+  const title = lv === DAILY ? `Daily puzzle, ${dayName(today.key)} (${today.name})` : `Level ${lv + 1}`;
+  $('goal').innerHTML = `${title}. Fewest flips: <b>${par}</b>. Forced flips proven: <b>${n} of ${par}</b>`
     + (staysClaimed() ? ` <span class="note">(plus ${plural(staysClaimed(), 'mirror')} proven to stay)</span>` : '');
   $('meter-fill').style.width = `${Math.min(100, (100 * n) / par)}%`;
   const s = sel >= 0;
@@ -151,8 +171,12 @@ function describeCell(i) {
 function say(t) { $('sr').textContent = t; }
 function msg(h) { $('msg').innerHTML = h; }
 function levelButtons() {
-  const best = loadBest();
-  [...$('levels').children].forEach((b, i) => {
+  const best = loadBest(), db = dailyBest(), key = dateKey();
+  const d = $('daily-btn');
+  d.setAttribute('aria-current', String(lv === DAILY));
+  d.innerHTML = `Daily${db[key] ? `<span class="stars">${'★'.repeat(db[key])}</span>` : ''}`;
+  d.setAttribute('aria-label', `Daily puzzle${db[key] ? `, solved with ${db[key]} of 3 stars` : ''}`);
+  [...$('levels').querySelectorAll('[data-level]')].forEach((b, i) => {
     b.setAttribute('aria-current', String(i === lv));
     b.innerHTML = `${i + 1}${best[i] ? `<span class="stars">${'★'.repeat(best[i])}</span>` : ''}`;
     b.setAttribute('aria-label', `Level ${i + 1}${best[i] ? `, ${best[i]} of 3 stars` : ''}`);
@@ -191,7 +215,8 @@ $('next').onclick = () => { load(lv + 1); toBoard(); };
 $('ghosts').checked = ghostsOn;
 $('ghosts').onchange = () => { ghostsOn = $('ghosts').checked; store.set(KEY + '-ghosts', ghostsOn ? '1' : '0'); draw(); };
 const toBoard = () => { const r = canvas.getBoundingClientRect(); if (r.top < 0 || r.bottom > innerHeight) $('goal').scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); };
-LEVELS.forEach((_, i) => { const b = document.createElement('button'); b.onclick = () => { load(i); toBoard(); }; $('levels').append(b); });
+{ const b = document.createElement('button'); b.id = 'daily-btn'; b.className = 'daily'; b.onclick = () => { load(DAILY); toBoard(); }; $('levels').append(b); }
+LEVELS.forEach((_, i) => { const b = document.createElement('button'); b.dataset.level = i; b.onclick = () => { load(i); toBoard(); }; $('levels').append(b); });
 new ResizeObserver(() => g && draw()).observe(canvas);
 const best = loadBest();
 load(Math.min(LEVELS.findIndex((_, i) => !best[i]) >>> 0, LEVELS.length - 1));
