@@ -91,7 +91,8 @@ function win(n, par) {
   // target they are exactly a best solution.
   const st = starsFor(wrong);
   msg(`<span class="good">Proven. ${'★'.repeat(st)}${'☆'.repeat(3 - st)}</span> Every solution must make ${n === 1 ? 'this flip' : `these ${n} flips`}, `
-    + `so none can use fewer than ${par}.` + (solves ? ` Shown: making exactly ${n === 1 ? 'that flip' : 'those flips'} solves the puzzle.` : ''));
+    + `so none can use fewer than ${par}.` + (solves ? ` Shown: making exactly ${n === 1 ? 'that flip' : 'those flips'} solves the puzzle.` : '')
+    + (lv + 1 === LEVELS.length ? ' That was the last level. Thanks for playing.' : ''));
   show = { d: real, focus: -1 };
   const best = loadBest();
   if (!(best[lv] >= st)) { best[lv] = st; store.set(KEY, JSON.stringify(best)); }
