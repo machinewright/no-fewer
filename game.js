@@ -11,15 +11,20 @@ const $ = (id) => document.getElementById(id);
 const canvas = $('c');
 const KEY = 'prove-it-v2';
 let lv, g, goal, claims, history, show = null, wrong = 0, won = false, cursor = -1, sel = -1, ft = -1; // ft: the target whose light is shown alone
-let ghostsOn = localStorage.getItem(KEY + '-ghosts') !== '0';
+// Storage can be missing or blocked (private modes, sandboxed frames): the game must still run.
+const store = {
+  get: (k) => { try { return localStorage.getItem(k); } catch { return null; } },
+  set: (k, v) => { try { localStorage.setItem(k, v); } catch { /* progress just isn't saved */ } },
+};
+let ghostsOn = store.get(KEY + '-ghosts') !== '0';
 
 function loadBest() {
-  try { const b = JSON.parse(localStorage.getItem(KEY) || '{}'); return b && typeof b === 'object' ? b : {}; } catch { return {}; }
+  try { const b = JSON.parse(store.get(KEY) || '{}'); return b && typeof b === 'object' ? b : {}; } catch { return {}; }
 }
 export const starsFor = (w) => (w === 0 ? 3 : w <= 2 ? 2 : 1);
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
 const where = (i) => `column ${i % g.w + 1}, row ${Math.floor(i / g.w) + 1}`;
-const tilt = (r) => (r ? 'leaning \\' : 'leaning /');
+const tilt = (r) => (r ? 'starts as \\' : 'starts as /');
 
 function load(k) {
   lv = k; g = parseBoard(LEVELS[k].rows); goal = targets(g);
@@ -89,7 +94,7 @@ function win(n, par) {
     + `so none can use fewer than ${par}.` + (solves ? ` Shown: making exactly ${n === 1 ? 'that flip' : 'those flips'} solves the puzzle.` : ''));
   show = { d: real, focus: -1 };
   const best = loadBest();
-  if (!(best[lv] >= st)) { best[lv] = st; localStorage.setItem(KEY, JSON.stringify(best)); }
+  if (!(best[lv] >= st)) { best[lv] = st; store.set(KEY, JSON.stringify(best)); }
   $('next').hidden = lv + 1 >= LEVELS.length;
   levelButtons(); update();
   if (!$('next').hidden) $('next').focus({ preventScroll: true });
@@ -97,11 +102,12 @@ function win(n, par) {
 
 function update() {
   const par = LEVELS[lv].par, n = flipsClaimed();
-  $('goal').innerHTML = `Level ${lv + 1}: best solution <b>${plural(par, 'flip')}</b>. Forced flips proven: <b>${n} of ${par}</b>`;
+  $('goal').innerHTML = `Level ${lv + 1}. Fewest flips: <b>${par}</b>. Forced flips proven: <b>${n} of ${par}</b>`;
   $('meter-fill').style.width = `${Math.min(100, (100 * n) / par)}%`;
   const s = sel >= 0;
   $('c-flip').disabled = !s; $('c-stay').disabled = !s;
-  $('sel').textContent = won ? '' : s ? `Selected: the mirror at ${where(sel)}, ${tilt(g.cells[sel].rot)} at the start.` : 'No mirror selected.';
+  $('sel').textContent = won ? '' : s ? `Selected: the mirror at ${where(sel)}, ${tilt(g.cells[sel].rot)}.` : 'No mirror selected.';
+  $('undo').disabled = won || !history.length;
   $('score').textContent = wrong ? `Claims not proven: ${wrong}.` : '';
   draw();
 }
@@ -112,7 +118,7 @@ function draw() {
   if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
   drawBoard(canvas, g, show ? show.d : claims, {
     focus: show && show.focus >= 0 ? show.focus : cursor, selected: show ? -1 : sel, feedTarget: won ? -1 : ft, fadeUnreached: false,
-    ghosts: show ? true : ghostsOn, showStart: true, settled: claims,
+    ghosts: show ? true : ghostsOn, showStart: true, settled: show && show.focus >= 0 ? claims.map((v, j) => (j === show.focus ? UNDECIDED : v)) : claims,
   });
   canvas.setAttribute('aria-label', describe());
 }
@@ -126,6 +132,16 @@ function describe() {
   }
   return s;
 }
+const firstMirror = () => Math.max(0, g.cells.findIndex((c) => isMirror(c)));
+function describeCell(i) {
+  const c = g.cells[i], at = `Column ${i % g.w + 1}, row ${Math.floor(i / g.w) + 1}: `;
+  if (isMirror(c)) return at + `mirror, starts as ${c.rot ? 'backslash' : 'slash'}, `
+    + (claims[i] === UNDECIDED ? 'open' : claims[i] === c.rot ? 'must stay' : 'must flip') + (i === sel ? ', selected' : '') + '.';
+  if (c.type === 'target') return at + `target, ${traceGhost(g, claims).litReal.has(i) ? 'lit' : 'dark'}${i === ft ? ', light to it shown alone' : ''}.`;
+  if (c.type === 'emitter') return at + `lamp, shining ${['up', 'right', 'down', 'left'][c.dir]}.`;
+  return at + (c.type === 'wall' ? 'wall.' : 'empty.');
+}
+function say(t) { $('sr').textContent = t; }
 function msg(h) { $('msg').innerHTML = h; }
 function levelButtons() {
   const best = loadBest();
@@ -145,10 +161,10 @@ canvas.addEventListener('click', (e) => {
 canvas.addEventListener('keydown', (e) => {
   const mv = { ArrowRight: [1, 0], ArrowLeft: [-1, 0], ArrowDown: [0, 1], ArrowUp: [0, -1] }[e.key];
   if (mv) {
-    e.preventDefault(); if (cursor < 0) cursor = sel >= 0 ? sel : 0;
+    e.preventDefault(); if (cursor < 0) cursor = sel >= 0 ? sel : firstMirror();
     const x = Math.min(g.w - 1, Math.max(0, (cursor % g.w) + mv[0])), y = Math.min(g.h - 1, Math.max(0, Math.floor(cursor / g.w) + mv[1]));
-    cursor = y * g.w + x; if (!won) show = null; draw();
-  } else if (e.key === 'Escape' && ft >= 0) { ft = -1; msg('Showing all light again.'); update(); } else if ((e.key === 'Enter' || e.key === ' ') && cursor >= 0) { e.preventDefault(); select(cursor); }
+    cursor = y * g.w + x; if (!won) show = null; draw(); say(describeCell(cursor));
+  } else if (e.key === 'Escape' && ft >= 0) { ft = -1; msg('Showing all light again.'); update(); } else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (cursor < 0) { cursor = firstMirror(); draw(); say(describeCell(cursor)); } else select(cursor); }
 });
 document.addEventListener('keydown', (e) => {
   if (e.ctrlKey || e.metaKey || e.altKey || e.target.matches('input, textarea')) return;
@@ -166,7 +182,7 @@ $('undo').onclick = undo;
 $('restart').onclick = () => load(lv);
 $('next').onclick = () => load(lv + 1);
 $('ghosts').checked = ghostsOn;
-$('ghosts').onchange = () => { ghostsOn = $('ghosts').checked; localStorage.setItem(KEY + '-ghosts', ghostsOn ? '1' : '0'); draw(); };
+$('ghosts').onchange = () => { ghostsOn = $('ghosts').checked; store.set(KEY + '-ghosts', ghostsOn ? '1' : '0'); draw(); };
 LEVELS.forEach((_, i) => { const b = document.createElement('button'); b.onclick = () => load(i); $('levels').append(b); });
 new ResizeObserver(() => g && draw()).observe(canvas);
 const best = loadBest();

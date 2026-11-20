@@ -12,6 +12,7 @@ const PICKS = [ // [generator level, seed, hint]
   [4, 291, 'Here no flip can be proven at the start. Begin with mirrors that must stay.'],
   [4, 30, 'Busy board? Tap a target: only the light that could still reach it stays bright. Where all of that light squeezes through one mirror, the mirror is forced. Tap the target again to see everything.'], [5, 57, null], [4, 538, null], [6, 201, null], [6, 123, null],
   [8, 190, null], [8, 47, null], [9, 74, null], [10, 101, null], [10, 88, null],
+  [11, 544, null], [12, 1312, null], [11, 1896, null], [13, 247, null], [13, 1404, null], [13, 624, null],
 ];
 const levels = PICKS.map(([L, seed, hint]) => {
   const rows = L === 'hand' ? seed : enc(generateWith(seed, { ...paramsFor(L), colors: 1, filters: 0, splitters: 0 }).puzzle);
