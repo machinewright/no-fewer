@@ -33,8 +33,12 @@ export function drawBoard(canvas, g, decided, { focus = -1, fadeUnreached = true
   // feedTarget: show only light that can still reach that target; the rest is drawn faintly
   const feed = feedTarget >= 0 ? feedEdges(g, decided, feedTarget) : null;
   const feeds = (s) => !feed || feed.has(segEdge(g, s));
-  const dim = (s, a) => { ctx.globalAlpha = feeds(s) ? a : a * 0.13; line(s); };
-  if (ghosts) t.segments.filter((s) => s.ghost).forEach((s) => dim(s, 1));
+  const dim = (s, a) => { ctx.globalAlpha = feeds(s) ? a : a * 0.1; line(s); };
+  if (ghosts) t.segments.filter((s) => s.ghost && !(feed && feeds(s))).forEach((s) => dim(s, 1));
+  if (ghosts && feed) { // the focused target's supply lines: brighter and thicker than ordinary ghost light
+    ctx.globalAlpha = 1; ctx.strokeStyle = 'rgba(255,209,102,0.95)'; ctx.lineWidth = Math.max(2, cell * 0.06);
+    t.segments.filter((s) => s.ghost && feeds(s)).forEach(line);
+  }
   ctx.globalAlpha = 1;
   ctx.setLineDash([]);
   for (const [w, a] of [[0.26, 0.12], [0.13, 0.25], [0.055, 1]]) {
