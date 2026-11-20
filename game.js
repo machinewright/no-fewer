@@ -63,8 +63,8 @@ function win(n, par) {
   // Deduction picks at least par flips, and a par-flip solution exists, so these flips are exactly a best solution
   // whenever every target lights up; otherwise the remaining unclaimed mirrors still had a role we didn't settle.
   const st = starsFor(wrong);
-  msg(`<span class="good">Proven. ${'★'.repeat(st)}${'☆'.repeat(3 - st)}</span> Every solution must make these ${n} flips, `
-    + `so none can use fewer than ${par}.` + (solves ? ' Shown: making exactly these flips solves the puzzle.' : ''));
+  msg(`<span class="good">Proven. ${'★'.repeat(st)}${'☆'.repeat(3 - st)}</span> Every solution must make ${n === 1 ? 'this flip' : `these ${n} flips`}, `
+    + `so none can use fewer than ${par}.` + (solves ? ` Shown: making exactly ${n === 1 ? 'that flip' : 'these flips'} solves the puzzle.` : ''));
   show = { d: real, focus: -1 };
   const best = loadBest();
   if (!(best[lv] >= st)) { best[lv] = st; localStorage.setItem(KEY, JSON.stringify(best)); }

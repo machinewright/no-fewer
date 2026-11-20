@@ -2,7 +2,7 @@
 export const LEVELS = [
   {"par":1,"rows":[">../.",".....","...o."],"hint":"The light misses the target because of one mirror. Click it to claim it <b>must flip</b>. The game checks the opposite: if it stayed, could light still reach the target? It couldn't, so the claim is proven."},
   {"par":2,"rows":[".o...","..../",".....","..v..","//\\.."],"hint":"Mirrors you haven't claimed are drawn as an <b>X</b>: until you settle them, light may go either way through them (the dashed light). Claim a flip only when keeping the mirror would leave some target with no light at all, solid or dashed."},
-  {"par":2,"rows":["/..../","\\...<.",".\\..\\.","...#..","/../..","o/>/.o"],"hint":"You can also claim a mirror <b>must stay</b>: flipping it would starve a target. A settled mirror sends light only one way, which can make the next flip provable."},
+  {"par":2,"rows":["/..../","\\...<.",".\\..\\.","...#..","/../..","o/>/.o"],"hint":"You can also claim a mirror <b>must stay</b>: flipping it would leave a target with no light. A settled mirror sends light only one way, which can make the next flip provable."},
   {"par":2,"rows":["./\\\\/.","..^..\\","..#.^/","o/....","...../",".o./.."],"hint":"Here no flip can be proven at the start. Begin with mirrors that must stay."},
   {"par":4,"rows":[".>.\\o.","./....",".o./\\.","....\\.","./\\.v.","/././#"]},
   {"par":3,"rows":["#..//\\","/...^.","....\\.",".o.\\..","\\<../o","\\.../."]},

@@ -8,7 +8,7 @@ import { deduceRounds, enc } from './analyze.mjs';
 const PICKS = [ // [generator level, seed, hint]
   ['hand', ['>../.', '.....', '...o.'], 'The light misses the target because of one mirror. Click it to claim it <b>must flip</b>. The game checks the opposite: if it stayed, could light still reach the target? It couldn\'t, so the claim is proven.'],
   [2, 28, 'Mirrors you haven\'t claimed are drawn as an <b>X</b>: until you settle them, light may go either way through them (the dashed light). Claim a flip only when keeping the mirror would leave some target with no light at all, solid or dashed.'],
-  [4, 69, 'You can also claim a mirror <b>must stay</b>: flipping it would starve a target. A settled mirror sends light only one way, which can make the next flip provable.'],
+  [4, 69, 'You can also claim a mirror <b>must stay</b>: flipping it would leave a target with no light. A settled mirror sends light only one way, which can make the next flip provable.'],
   [4, 291, 'Here no flip can be proven at the start. Begin with mirrors that must stay.'],
   [4, 30, null], [5, 57, null], [4, 538, null], [6, 201, null], [6, 123, null],
   [8, 190, null], [8, 47, null], [9, 74, null], [10, 101, null], [10, 88, null],
