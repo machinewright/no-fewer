@@ -68,8 +68,8 @@ function claim(flip) {
   if (!dark.length) {
     wrong++;
     show = { d: test, focus: i };
-    msg(`<span class="bad">Not proven.</span> Shown: if this mirror ${flip ? 'stayed' : 'flipped'}, light could still reach `
-      + `every target (solid or dashed), given what's settled so far.`);
+    msg(`<span class="bad">Not proven (yet).</span> Shown: if this mirror ${flip ? 'stayed' : 'flipped'}, light could still reach `
+      + `every target (solid or dashed), given what's settled so far. Click the board to go on.`);
     return update();
   }
   history.push(claims.slice());
@@ -77,9 +77,11 @@ function claim(flip) {
   show = { d: test, focus: i }; // the evidence: the opposite choice, in ghost light
   const n = flipsClaimed(), par = LEVELS[lv].par;
   if (n >= par) return win(n, par);
-  msg(`<span class="good">Proven: must ${flip ? 'flip' : 'stay'}.</span> Shown: if it ${flip ? 'stayed' : 'flipped'}, the crossed-out `
+  msg(`<span class="good">Proven: must ${flip ? 'flip' : 'stay'}.</span> For a moment the board shows why: if it ${flip ? 'stayed' : 'flipped'}, the crossed-out `
     + `target would get no light at all.`);
   update();
+  const shown = show; // then back to the real board, with the new claim settled
+  setTimeout(() => { if (show === shown && !won) { show = null; update(); } }, 1800);
 }
 
 function win(n, par) {
@@ -103,13 +105,14 @@ function win(n, par) {
 
 function update() {
   const par = LEVELS[lv].par, n = flipsClaimed();
-  $('goal').innerHTML = `Level ${lv + 1}. Fewest flips: <b>${par}</b>. Forced flips proven: <b>${n} of ${par}</b>`;
+  $('goal').innerHTML = `Level ${lv + 1}. Fewest flips: <b>${par}</b>. Forced flips proven: <b>${n} of ${par}</b>`
+    + (staysClaimed() ? ` <span class="note">(plus ${plural(staysClaimed(), 'mirror')} proven to stay)</span>` : '');
   $('meter-fill').style.width = `${Math.min(100, (100 * n) / par)}%`;
   const s = sel >= 0;
   $('c-flip').disabled = !s; $('c-stay').disabled = !s;
   $('sel').textContent = won ? '' : s ? `Selected: the mirror at ${where(sel)}, ${tilt(g.cells[sel].rot)}.` : 'No mirror selected.';
   $('undo').disabled = won || !history.length;
-  $('score').textContent = wrong ? `Claims not proven: ${wrong}.` : '';
+  $('score').textContent = wrong ? `Unproven claims so far: ${wrong}. 3 stars for none, 2 for up to two.` : '';
   draw();
 }
 
@@ -181,10 +184,11 @@ $('c-flip').onclick = () => claim(true);
 $('c-stay').onclick = () => claim(false);
 $('undo').onclick = undo;
 $('restart').onclick = () => load(lv);
-$('next').onclick = () => load(lv + 1);
+$('next').onclick = () => { load(lv + 1); toBoard(); };
 $('ghosts').checked = ghostsOn;
 $('ghosts').onchange = () => { ghostsOn = $('ghosts').checked; store.set(KEY + '-ghosts', ghostsOn ? '1' : '0'); draw(); };
-LEVELS.forEach((_, i) => { const b = document.createElement('button'); b.onclick = () => load(i); $('levels').append(b); });
+const toBoard = () => { const r = canvas.getBoundingClientRect(); if (r.top < 0 || r.bottom > innerHeight) $('goal').scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); };
+LEVELS.forEach((_, i) => { const b = document.createElement('button'); b.onclick = () => { load(i); toBoard(); }; $('levels').append(b); });
 new ResizeObserver(() => g && draw()).observe(canvas);
 const best = loadBest();
 load(Math.min(LEVELS.findIndex((_, i) => !best[i]) >>> 0, LEVELS.length - 1));

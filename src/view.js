@@ -100,7 +100,7 @@ export function drawBoard(canvas, g, decided, { focus = -1, fadeUnreached = true
         const flipped = d !== c.rot;
         ctx.strokeStyle = flipped ? COLORS.flipped : COLORS.mirror; stroke(d, far, cell * 0.09);
         const dot = showStart ? !settled || settled[i] !== UNDECIDED : flipped;
-        if (dot) { ctx.fillStyle = COLORS.flipped; ctx.beginPath(); ctx.arc(x * cell + cell * 0.84, y * cell + cell * 0.16, cell * 0.065, 0, 7); ctx.fill(); }
+        if (dot) { ctx.fillStyle = flipped ? COLORS.flipped : COLORS.mirror; ctx.beginPath(); ctx.arc(x * cell + cell * 0.84, y * cell + cell * 0.16, cell * 0.065, 0, 7); ctx.fill(); }
       }
     }
     if (i === feedTarget) { // the target whose light the player is looking at
