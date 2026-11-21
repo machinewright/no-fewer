@@ -101,8 +101,11 @@ function closeCase() { // after a claim inside a case; returns true when the who
   if (!st) return false;
   sup.cases[sup.active].closed = st; sel = -1; show = null;
   if (sup.cases.every((c) => c.closed)) { winCases(); return true; }
-  msg(`<span class="good">${caseClosedText(sup.active)}</span>${otherCaseText()}`);
-  update(); return true;
+  msg(`<span class="good">${caseClosedText(sup.active)}</span> Switching to the other case (the ringed mirror ${CASE_NAME[1 - sup.active].slice(3)}).`);
+  update();
+  const k = 1 - sup.active, from = sup; // after a moment, unless the player has moved on already
+  setTimeout(() => { if (sup === from && !won && sup.active !== k && !sup.cases[k].closed) { const m = $('msg').innerHTML; switchCase(k); msg(m.replace('Switching to', 'Switched to')); } }, 1600);
+  return true;
 }
 function switchCase(k) {
   if (!sup || won || k === sup.active) return;
