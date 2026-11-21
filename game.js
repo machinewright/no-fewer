@@ -13,6 +13,7 @@ const $ = (id) => document.getElementById(id);
 const canvas = $('c');
 const KEY = 'prove-it-v2';
 const DAILY = -1; // lv for the daily puzzle
+let shareText = '';
 let lv, today = null, g, goal, claims, history, show = null, wrong = 0, won = false, cursor = -1, sel = -1, ft = -1; // ft: the target whose light is shown alone
 // Storage can be missing or blocked (private modes, sandboxed frames): the game must still run.
 const store = {
@@ -41,7 +42,7 @@ function load(k) {
   show = null; wrong = 0; won = false; cursor = -1; sel = -1; ft = -1;
   $('hint').innerHTML = level().hint || '';
   $('hint').hidden = !level().hint;
-  $('next').hidden = true;
+  $('next').hidden = true; $('share').hidden = true;
   msg(k === 0 ? 'Select the mirror you think must flip.' : 'Select a mirror you can prove must flip or must stay.');
   levelButtons(); update();
 }
@@ -119,6 +120,9 @@ function dailyDone(st) {
   const b = dailyBest();
   if (!(b[today.key] >= st)) { b[today.key] = st; store.set(KEY + '-daily', JSON.stringify(b)); }
   const n = streak(Object.keys(b));
+  shareText = `No Fewer, daily puzzle ${today.key} (${today.name}): proved that ${today.par} flips is the minimum ${'★'.repeat(st)}${'☆'.repeat(3 - st)}`
+    + `${n > 1 ? `, ${n} days in a row` : ''}. https://machinewright.github.io/no-fewer/`;
+  $('share').hidden = false;
   return `Daily puzzle done${n > 1 ? `: ${n} days in a row` : ''}. A new board comes at midnight.`;
 }
 
@@ -210,6 +214,10 @@ function undo() {
 $('c-flip').onclick = () => claim(true);
 $('c-stay').onclick = () => claim(false);
 $('undo').onclick = undo;
+$('share').onclick = async () => { // the result has no spoilers: date, difficulty, par, stars
+  try { await navigator.clipboard.writeText(shareText); msg('Copied: ' + shareText.replace(/&/g, '&amp;').replace(/</g, '&lt;')); }
+  catch { msg('Copy this: ' + shareText.replace(/&/g, '&amp;').replace(/</g, '&lt;')); }
+};
 $('restart').onclick = () => load(lv);
 $('next').onclick = () => { load(lv + 1); toBoard(); };
 $('ghosts').checked = ghostsOn;
