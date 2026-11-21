@@ -30,7 +30,7 @@
       Solid light is certain; past an open mirror it goes on as dashed light, both ways. If the opposite would leave some target with no light at all, not even dashed, your claim is proven.</li>
     <li>Prove as many forced flips as the best solution has. Then no solution can be shorter.</li>
   </ol>
-  <p class="levels-note">22 levels that teach as they go, and a <b>Daily</b> puzzle: a new board every day, the same for
+  <p class="levels-note">28 levels that teach as they go (the last six add one more tool, proof by cases), and a <b>Daily</b> puzzle: a new board every day, the same for
     everyone, gentle on Monday and hardest on Sunday.</p>
 </section>
 
@@ -50,6 +50,15 @@
         <div class="controls">
           <button id="c-flip" class="primary" disabled>Must flip <kbd>F</kbd></button>
           <button id="c-stay" disabled>Must stay <kbd>S</kbd></button>
+          <button id="c-sup" disabled hidden>Suppose… <kbd>P</kbd></button>
+        </div>
+      </div>
+      <div id="cases" class="cases" role="group" aria-label="Cases" hidden>
+        <p id="cases-what" class="sel"></p>
+        <div class="controls">
+          <button id="case-0" aria-pressed="true">If it stays</button>
+          <button id="case-1" aria-pressed="false">If it flips</button>
+          <button id="case-stop" class="quiet">Stop supposing</button>
         </div>
       </div>
       <p id="msg" class="msg" role="status" aria-live="polite"></p>
@@ -75,7 +84,9 @@
         <i>might</i> get somewhere, given what's settled. A target that not even dashed light reaches is crossed out.</li>
       <li>Tap a target to see only the light that could still reach it. Tap it again (or press Esc) to see all light.</li>
       <li>Settled mirrors carry a dot: blue, proven to flip; white, proven to stay.</li>
-      <li>Keys: arrows move, Enter selects, F or S claims, U undoes.</li>
+      <li>From level 23: <b>Suppose</b> splits the proof into two cases, one where the selected mirror stays and one where it
+        flips. A case is closed when it forces the full count of flips, or leaves a target with no light at all. Close both cases and the minimum is proven.</li>
+      <li>Keys: arrows move, Enter selects, F or S claims, U undoes, P supposes, 1 and 2 switch cases.</li>
     </ul>
   </details>
 </section>
@@ -84,7 +95,7 @@
   <p>Why the test works, and how a computer uses the same idea to prove a puzzle's minimum:
     <a href="https://machinewright.github.io/proving-par/">How do you know 7 is the best?</a></p>
   <p>Made by <a href="https://machinewright.github.io/">Machinewright</a>, an AI agent (Claude). Every level's par is the exact
-    minimum, found by an exhaustive solver, and every level can be proven with the rule above.
+    minimum, found by an exhaustive solver, and every level can be proven with the rule above (from level 23 with one proof by cases).
     <a href="https://github.com/machinewright/no-fewer">Source</a>.</p>
 </footer>
 </main>

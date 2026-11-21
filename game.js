@@ -15,6 +15,10 @@ const KEY = 'prove-it-v2';
 const DAILY = -1; // lv for the daily puzzle
 let shareText = '';
 let lv, today = null, g, goal, claims, history, show = null, wrong = 0, won = false, cursor = -1, sel = -1, ft = -1; // ft: the target whose light is shown alone
+// Proof by cases (levels marked cases: true). sup = { m, base, baseHistory, active, cases: [{ claims, history, closed }] };
+// case 0: mirror m stays, case 1: it flips. While supposing, `claims`/`history` are the active case's.
+let sup = null;
+const CASE_NAME = ['it stays', 'it flips'];
 // Storage can be missing or blocked (private modes, sandboxed frames): the game must still run.
 const store = {
   get: (k) => { try { return localStorage.getItem(k); } catch { return null; } },
@@ -39,7 +43,8 @@ function load(k) {
   if (k === DAILY && !today) k = 0;
   lv = k; g = parseBoard(level().rows); goal = targets(g);
   claims = new Int8Array(g.cells.length).fill(UNDECIDED); history = [];
-  show = null; wrong = 0; won = false; cursor = -1; sel = -1; ft = -1;
+  show = null; wrong = 0; won = false; cursor = -1; sel = -1; ft = -1; sup = null;
+  $('c-sup').hidden = !level().cases;
   $('hint').innerHTML = level().hint || '';
   $('hint').hidden = !level().hint;
   $('next').hidden = true; $('share').hidden = true;
@@ -50,7 +55,7 @@ function load(k) {
 // Claimed mirrors are fixed; unclaimed ones are open (light goes both ways).
 const darkTargets = (d) => { const t = traceGhost(g, d); return goal.filter((i) => !t.lit.has(i)); };
 const flipsClaimed = () => g.cells.filter((c, i) => isMirror(c) && claims[i] !== UNDECIDED && claims[i] !== c.rot).length;
-const staysClaimed = () => g.cells.filter((c, i) => isMirror(c) && claims[i] === c.rot).length;
+const staysClaimed = () => g.cells.filter((c, i) => isMirror(c) && claims[i] === c.rot && !(sup && !won && i === sup.m)).length;
 
 function select(i) {
   if (won || i < 0) return;
@@ -66,11 +71,73 @@ function select(i) {
     sel = -1; msg(`Already settled: this mirror ${claims[i] === c.rot ? 'must stay' : 'must flip'}. Undo takes a claim back.`);
     return update();
   }
+  if (sup && sup.cases[sup.active].closed) { sel = -1; msg(caseClosedText(sup.active) + otherCaseText()); return update(); }
   sel = i; msg(''); update();
+}
+
+// ---- Suppose: proof by cases ----
+function suppose() {
+  if (won || sup || sel < 0 || !level().cases) return;
+  const m = sel, rot = g.cells[m].rot;
+  sup = { m, base: claims, baseHistory: history, active: 0, cases: [rot, rot ^ 1].map((v) => {
+    const c = claims.slice(); c[m] = v; return { claims: c, history: [], closed: null };
+  }) };
+  sel = -1; show = null;
+  for (const k of [1, 0]) { sup.active = k; claims = sup.cases[k].claims; history = sup.cases[k].history; sup.cases[k].closed = caseState(); }
+  if (sup.cases.every((c) => c.closed)) return winCases();
+  msg(`Supposing about the mirror at ${where(m)}. Prove the minimum in both cases; this board is the case where ${CASE_NAME[0]}.`);
+  update();
+}
+const caseState = () => (darkTargets(claims).length ? 'dark' : flipsClaimed() >= level().par ? 'count' : null);
+function caseClosedText(k) {
+  const c = sup.cases[k];
+  return c.closed === 'dark' ? `Case closed: if ${CASE_NAME[k]}, some target gets no light at all, so this case can't happen.`
+    : `Case closed: if ${CASE_NAME[k]}, at least ${plural(level().par, 'flip')} are forced.`;
+}
+const otherCaseText = () => (sup.cases[1 - sup.active].closed ? '' : ` Now switch to the case where ${CASE_NAME[1 - sup.active]}.`);
+function closeCase() { // after a claim inside a case; returns true when the whole proof is done
+  const st = caseState();
+  if (!st) return false;
+  sup.cases[sup.active].closed = st; sel = -1; show = null;
+  if (sup.cases.every((c) => c.closed)) { winCases(); return true; }
+  msg(`<span class="good">${caseClosedText(sup.active)}</span>${otherCaseText()}`);
+  update(); return true;
+}
+function switchCase(k) {
+  if (!sup || won || k === sup.active) return;
+  sup.cases[sup.active].claims = claims; sup.cases[sup.active].history = history;
+  sup.active = k; claims = sup.cases[k].claims; history = sup.cases[k].history; sel = -1; show = null;
+  msg(sup.cases[k].closed ? caseClosedText(k) : `The case where the mirror at ${where(sup.m)} ${CASE_NAME[k].slice(3)}.`);
+  update();
+}
+function stopSupposing() {
+  if (!sup || won) return;
+  claims = sup.base; history = sup.baseHistory; sup = null; sel = -1; show = null;
+  msg('Stopped supposing. Both cases are dropped; your earlier claims are kept.'); update();
+}
+function winCases() {
+  const par = level().par, k = sup.cases.map((c, j) => (c.closed === 'dark' ? `if ${CASE_NAME[j]}, the targets can't all be lit`
+    : `if ${CASE_NAME[j]}, at least ${plural(par, 'flip')} are forced`));
+  won = true; sel = -1;
+  const real = new Int8Array(g.cells.length).fill(UNDECIDED);
+  g.cells.forEach((c, j) => { if (isMirror(c)) real[j] = c.rot; });
+  for (const j of level().sol) real[j] ^= 1;
+  claims = real;
+  const st = starsFor(wrong);
+  msg(`<span class="good">Proven by cases. ${'★'.repeat(st)}${'☆'.repeat(3 - st)}</span> The mirror at ${where(sup.m)} either stays or flips: `
+    + `${k[0]}; ${k[1]}. Either way no solution uses fewer than ${par}. Shown: a solution with exactly ${par}.`
+    + (lv + 1 === LEVELS.length ? ' That was the last level. Thanks for playing.' : ''));
+  show = { d: real, focus: -1 };
+  const best = loadBest();
+  if (!(best[lv] >= st)) { best[lv] = st; store.set(KEY, JSON.stringify(best)); }
+  $('next').hidden = lv + 1 >= LEVELS.length;
+  levelButtons(); update();
+  if (!$('next').hidden) $('next').focus({ preventScroll: true });
 }
 
 function claim(flip) {
   if (won || sel < 0) return;
+  if (sup && sup.cases[sup.active].closed) return;
   const i = sel, c = g.cells[i];
   const want = flip ? c.rot ^ 1 : c.rot; // the claimed state
   const test = claims.slice(); test[i] = want ^ 1; // the opposite choice
@@ -86,7 +153,8 @@ function claim(flip) {
   claims[i] = want; sel = -1;
   show = { d: test, focus: i }; // the evidence: the opposite choice, in ghost light
   const n = flipsClaimed(), par = level().par;
-  if (n >= par) return win(n, par);
+  if (sup) { if (closeCase()) return; }
+  else if (n >= par) return win(n, par);
   msg(`<span class="good">Proven: must ${flip ? 'flip' : 'stay'}.</span> For a moment the board shows why: if it ${flip ? 'stayed' : 'flipped'}, the crossed-out `
     + `target would get no light at all.`);
   update();
@@ -129,11 +197,21 @@ function dailyDone(st) {
 function update() {
   const par = level().par, n = flipsClaimed();
   const title = lv === DAILY ? `Daily puzzle, ${dayName(today.key)} (${today.name})` : `Level ${lv + 1}`;
-  $('goal').innerHTML = `${title}. Fewest flips: <b>${par}</b>. Forced flips proven: <b>${n} of ${par}</b>`
-    + (staysClaimed() ? ` <span class="note">(plus ${plural(staysClaimed(), 'mirror')} proven to stay)</span>` : '');
+  const inCase = sup && !won;
+  $('goal').innerHTML = `${title}. Fewest flips: <b>${par}</b>. ${inCase ? `In this case, forced flips: <b>${n} of ${par}</b>` : `Forced flips proven: <b>${n} of ${par}</b>`}`
+    + (staysClaimed() && !(won && level().cases) ? ` <span class="note">(plus ${plural(staysClaimed(), 'mirror')} proven to stay)</span>` : '');
   $('meter-fill').style.width = `${Math.min(100, (100 * n) / par)}%`;
   const s = sel >= 0;
   $('c-flip').disabled = !s; $('c-stay').disabled = !s;
+  $('c-sup').disabled = !s || !!sup;
+  $('cases').hidden = !inCase;
+  if (inCase) {
+    $('cases-what').textContent = `Supposing about the mirror at ${where(sup.m)} (ringed).`;
+    sup.cases.forEach((c, k) => {
+      const b = $('case-' + k); b.setAttribute('aria-pressed', String(k === sup.active));
+      b.innerHTML = `If ${CASE_NAME[k]}${c.closed ? ' <span class="good">✓ closed</span>' : ''}`;
+    });
+  }
   $('sel').textContent = won ? '' : s ? `Selected: the mirror at ${where(sel)}, ${tilt(g.cells[sel].rot)}.` : 'No mirror selected.';
   $('undo').disabled = won || !history.length;
   $('score').textContent = wrong ? `Unproven claims so far: ${wrong}. 3 stars for none, 2 for up to two.` : '';
@@ -145,13 +223,13 @@ function draw() {
   const w = Math.round(css * dpr), h = Math.round((css * dpr * g.h) / g.w);
   if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
   drawBoard(canvas, g, show ? show.d : claims, {
-    focus: show && show.focus >= 0 ? show.focus : cursor, selected: show ? -1 : sel, feedTarget: won ? -1 : ft, fadeUnreached: false,
+    focus: show && show.focus >= 0 ? show.focus : cursor >= 0 ? cursor : sup && !won ? sup.m : -1, selected: show ? -1 : sel, feedTarget: won ? -1 : ft, fadeUnreached: false,
     ghosts: show ? true : ghostsOn, showStart: true, settled: show && show.focus >= 0 ? claims.map((v, j) => (j === show.focus ? UNDECIDED : v)) : claims,
   });
   canvas.setAttribute('aria-label', describe());
 }
 function describe() {
-  let s = `Board ${g.w} by ${g.h}. Settled: ${flipsClaimed()} must flip, ${staysClaimed()} must stay.`;
+  let s = `Board ${g.w} by ${g.h}. ${sup && !won ? `Case: the mirror at ${where(sup.m)} ${CASE_NAME[sup.active].slice(3)}. ` : ''}Settled: ${flipsClaimed()} must flip, ${staysClaimed()} must stay.`;
   const i = cursor >= 0 ? cursor : sel;
   if (i >= 0) {
     const c = g.cells[i];
@@ -205,15 +283,22 @@ document.addEventListener('keydown', (e) => {
   if (e.ctrlKey || e.metaKey || e.altKey || e.target.matches('input, textarea')) return;
   const k = e.key.toLowerCase();
   if (k === 'f') claim(true); else if (k === 's') claim(false); else if (k === 'u') undo();
+  else if (k === 'p' && level().cases) suppose(); else if ((k === '1' || k === '2') && sup) switchCase(+k - 1);
 });
 canvas.addEventListener('blur', () => { cursor = -1; draw(); });
 function undo() {
   if (!history.length || won) return;
-  claims = history.pop(); show = null; sel = -1; msg('Undone.'); update();
+  claims = history.pop(); show = null; sel = -1;
+  if (sup) sup.cases[sup.active].closed = caseState();
+  msg('Undone.'); update();
 }
 $('c-flip').onclick = () => claim(true);
 $('c-stay').onclick = () => claim(false);
 $('undo').onclick = undo;
+$('c-sup').onclick = suppose;
+$('case-0').onclick = () => switchCase(0);
+$('case-1').onclick = () => switchCase(1);
+$('case-stop').onclick = stopSupposing;
 $('share').onclick = async () => { // the result has no spoilers: date, difficulty, par, stars
   try { await navigator.clipboard.writeText(shareText); msg('Copied: ' + shareText.replace(/&/g, '&amp;').replace(/</g, '&lt;')); }
   catch { msg('Copy this: ' + shareText.replace(/&/g, '&amp;').replace(/</g, '&lt;')); }

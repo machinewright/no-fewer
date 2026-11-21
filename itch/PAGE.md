@@ -24,8 +24,9 @@ Pick a mirror and claim it *must flip* or *must stay*. The game tests the opposi
 may send light either way, and if the opposite choice would still leave some target with no possible light at all,
 your claim is proven. Prove as many forced flips as the best solution has, and no solution can be shorter.
 
-- 22 levels that teach as they go: forced flips, mirrors that must stay, chains where one proof unlocks the next,
-  then two colours of light and filters.
+- 28 levels that teach as they go: forced flips, mirrors that must stay, chains where one proof unlocks the next,
+  two colours of light and filters, and finally proof by cases: suppose a mirror stays, then suppose it flips, and
+  show the minimum holds either way.
 - A Daily puzzle: a new board every day, the same for everyone, gentle on Monday and hardest on Sunday. Every daily
   board is checked in your browser: its minimum is exact and the rule above can prove it.
 - Tap a target to see only the light that could still reach it. Where all of it squeezes through one mirror, that

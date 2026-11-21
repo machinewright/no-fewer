@@ -7,8 +7,10 @@ import { solve } from './src/solver.js';
 import { deduceRounds, enc } from './analyze.mjs';
 import { splits } from './src/suppose.js';
 const MONO = { colors: 1, filters: 0 }, C2 = { colors: 2, filters: 0 }, C2F = { colors: 2, filters: 1 };
-const SUPPOSE_HINT = 'New tool: <b>Suppose</b>. No single claim is provable here, but select the mirror two to the right of the '
-  + 'cyan lamp... '; // placeholder, replaced below once the level is chosen
+const SUPPOSE_HINT = 'New tool: <b>Suppose</b>. No claim here can be proven on its own, so reason by cases. Select the mirror at '
+  + 'column 5, row 4 and press Suppose. Now there are two boards: in one that mirror stays, in the other it flips. Make claims '
+  + 'in each as usual. A case is closed when it forces 4 flips, or when it leaves a target with no light at all (then that '
+  + 'case can\'t happen). Close both, and 4 is proven either way.';
 const PICKS = [ // [generator level, seed, hint, options (default: one color, no filters)]
   ['hand', ['>../.', '.....', '...o.'], 'One mirror stands between the lamp and the target. Select it, then claim it <b>must flip</b>. The game tests the opposite: if it stayed, could any light reach the target? None could, so the claim is proven.'],
   [2, 28, 'Open mirrors (the faint X) may send light either way, so the dashed light shows everywhere light <i>might</i> go. Look for a target that only one dashed path reaches: the mirrors on that path are forced.'],
@@ -23,7 +25,7 @@ const PICKS = [ // [generator level, seed, hint, options (default: one color, no
   [13, 4331, null, C2F],
   // Expert: the round rule alone stops short; one "Suppose" (proof by cases) finishes the proof.
   [4, 24, SUPPOSE_HINT, MONO, 'cases'],
-  [4, 34, null, MONO, 'cases'],
+  [4, 34, 'Which mirror to suppose about is up to you now. A split that closes neither case costs nothing: press <b>Stop supposing</b> and try another mirror. Claims you made before supposing are kept.', MONO, 'cases'],
   [6, 51, null, MONO, 'cases'],
   [9, 7, null, MONO, 'cases'],
   [12, 2, null, MONO, 'cases'],
