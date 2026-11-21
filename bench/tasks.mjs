@@ -41,7 +41,7 @@ Answer with your reasoning, then on the LAST line a JSON array of claims in orde
 }
 
 function lastJson(text) {
-  const m = [...text.matchAll(/\[\s*\[[\s\S]*?\]\s*\]/g)];
+  const m = [...text.matchAll(/\[\s*\[[\s\S]*?\]\s*\]|\[\s*\]/g)]; // a list of lists, or an empty list
   if (!m.length) return null;
   try { return JSON.parse(m[m.length - 1][0]); } catch { return null; }
 }
@@ -49,6 +49,7 @@ function lastJson(text) {
 export function check(task, k, text) {
   const l = LEVELS[k], g = parseBoard(l.rows), goal = targets(g), ans = lastJson(text);
   if (!Array.isArray(ans)) return { ok: false, why: 'no JSON answer' };
+  if (!ans.length) return { ok: false, empty: true, why: task === 'solve' ? 'answered: no solution exists' : 'answered: no claim is provable' };
   const at = (x, y) => (Number.isInteger(x) && Number.isInteger(y) && x >= 0 && y >= 0 && x < g.w && y < g.h ? y * g.w + x : -1);
   if (task === 'solve') {
     const d = Int8Array.from(g.cells, (c) => (c.type === 'mirror' ? c.rot : UNDECIDED));
