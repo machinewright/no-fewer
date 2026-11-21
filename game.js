@@ -91,10 +91,11 @@ function suppose() {
 const caseState = () => (darkTargets(claims).length ? 'dark' : flipsClaimed() >= level().par ? 'count' : null);
 function caseClosedText(k) {
   const c = sup.cases[k];
-  return c.closed === 'dark' ? `Case closed: if ${CASE_NAME[k]}, some target gets no light at all, so this case can't happen.`
-    : `Case closed: if ${CASE_NAME[k]}, at least ${plural(level().par, 'flip')} are forced.`;
+  const who = `if the ringed mirror ${CASE_NAME[k].slice(3)}`;
+  return c.closed === 'dark' ? `Case closed: ${who}, some target gets no light at all, so this case can't happen.`
+    : `Case closed: ${who}, at least ${plural(level().par, 'flip')} are forced.`;
 }
-const otherCaseText = () => (sup.cases[1 - sup.active].closed ? '' : ` Now switch to the case where ${CASE_NAME[1 - sup.active]}.`);
+const otherCaseText = () => (sup.cases[1 - sup.active].closed ? '' : ` Now switch to the other case (the ringed mirror ${CASE_NAME[1 - sup.active].slice(3)}).`);
 function closeCase() { // after a claim inside a case; returns true when the whole proof is done
   const st = caseState();
   if (!st) return false;

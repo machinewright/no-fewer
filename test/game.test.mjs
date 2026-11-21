@@ -56,3 +56,14 @@ test('proof by cases is sound: the bound it proves never exceeds the exact minim
   }
   assert.ok(checked > 300);
 });
+
+import { feedEdges } from '../src/feed.js';
+test('Suppose levels: the hint holds (after the provable claims, every mirror all targets\' light runs through splits)', () => {
+  for (const [k, l] of LEVELS.entries()) {
+    if (!l.cases) continue;
+    const g = parseBoard(l.rows), sp = splits(g, l.par), good = new Set(sp.good.map((x) => x.m));
+    const feeds = targets(g).map((t) => new Set([...feedEdges(g, sp.base.d, t)].map((e) => e >> 2)));
+    const cue = g.cells.map((c, i) => i).filter((i) => g.cells[i].type === 'mirror' && sp.base.d[i] === -1 && feeds.every((f) => f.has(i)));
+    assert.ok(cue.length && cue.every((m) => good.has(m)), `level ${k + 1}`);
+  }
+});

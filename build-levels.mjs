@@ -9,7 +9,7 @@ import { splits } from './src/suppose.js';
 const MONO = { colors: 1, filters: 0 }, C2 = { colors: 2, filters: 0 }, C2F = { colors: 2, filters: 1 };
 const SUPPOSE_HINT = 'New tool: <b>Suppose</b>. No claim here can be proven on its own, so reason by cases. Select the mirror at '
   + 'column 5, row 4 and press Suppose. Now there are two boards: in one that mirror stays, in the other it flips. Make claims '
-  + 'in each as usual. A case is closed when it forces 4 flips, or when it leaves a target with no light at all (then that '
+  + 'in each as usual. A case is closed when it forces 4 flips (in the flip case, the supposed flip counts as one), or when it leaves a target with no light at all (then that '
   + 'case can\'t happen). Close both, and 4 is proven either way.';
 const PICKS = [ // [generator level, seed, hint, options (default: one color, no filters)]
   ['hand', ['>../.', '.....', '...o.'], 'One mirror stands between the lamp and the target. Select it, then claim it <b>must flip</b>. The game tests the opposite: if it stayed, could any light reach the target? None could, so the claim is proven.'],
@@ -25,11 +25,14 @@ const PICKS = [ // [generator level, seed, hint, options (default: one color, no
   [13, 4331, null, C2F],
   // Expert: the round rule alone stops short; one "Suppose" (proof by cases) finishes the proof.
   [4, 24, SUPPOSE_HINT, MONO, 'cases'],
-  [4, 34, 'Which mirror to suppose about is up to you now. A split that closes neither case costs nothing: press <b>Stop supposing</b> and try another mirror. Claims you made before supposing are kept.', MONO, 'cases'],
-  [6, 51, null, MONO, 'cases'],
-  [9, 7, null, MONO, 'cases'],
-  [12, 2, null, MONO, 'cases'],
-  [11, 34, null, C2, 'cases'],
+  [6, 106, 'Which mirror to suppose about? First prove every claim you can. Then tap each target to see only the light '
+    + 'that could still reach it. A mirror that every target\'s light runs through is a good choice: whichever way it turns, '
+    + 'it changes what all of them can get. If neither '
+    + 'case closes, <b>Stop supposing</b> drops both cases and keeps your earlier claims (unproven claims still cost stars).', MONO, 'cases'],
+  [6, 11, null, MONO, 'cases'],
+  [8, 46, null, MONO, 'cases'],
+  [12, 59, null, MONO, 'cases'],
+  [13, 85, 'Three targets now. The same idea scales: prove what you can, then look for the mirror that all three targets\' light runs through.', MONO, 'cases'],
 ];
 const levels = PICKS.map(([L, seed, hint, opts = MONO, kind]) => {
   const rows = L === 'hand' ? seed : enc(generateWith(seed, { ...paramsFor(L), ...opts, splitters: 0 }).puzzle);
