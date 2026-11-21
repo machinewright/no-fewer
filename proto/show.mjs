@@ -1,0 +1,12 @@
+import { generateWith, paramsFor } from '../src/generator.js';
+import { parseBoard } from '../src/boards.js';
+import { enc } from '../src/encode.js';
+import { solve } from '../src/solver.js';
+import { splits } from '../src/suppose.js';
+const [L, seed, colors = 1] = process.argv.slice(2).map(Number);
+const rows = enc(generateWith(seed, { ...paramsFor(L), colors, filters: 0, splitters: 0 }).puzzle);
+const g = parseBoard(rows), par = solve(g).moves; console.log(rows.join('\n'), '\npar', par);
+const at = (i) => `(c${i % g.w + 1},r${Math.floor(i / g.w) + 1})`;
+const s = splits(g, par);
+console.log('base claims', s.base.claims.map(([i, v]) => at(i) + (v === g.cells[i].rot ? 'stay' : 'flip')).join(' '));
+for (const x of s.good) console.log('split', at(x.m), x.cases.map((c) => (c.v === g.cells[x.m].rot ? 'STAYS: ' : 'FLIPS: ') + (c.dead ? 'dead ' : c.flips + 'f ') + c.claims.map(([i, v]) => at(i) + (v === g.cells[i].rot ? 's' : 'f')).join(' ')).join(' | '));
