@@ -1,0 +1,157 @@
+{"model":"deepseek-v4-pro","task":"solve","level":3,"exit":0,"sec":58,"result":{"ok":true,"flips":2,"dark":0,"why":""}}
+{"model":"deepseek-v4-pro","task":"solve","level":5,"exit":0,"sec":28,"result":{"ok":true,"flips":4,"dark":0,"why":""}}
+{"model":"deepseek-v4-pro","task":"solve","level":9,"exit":0,"sec":56,"result":{"ok":true,"flips":6,"dark":0,"why":""}}
+{"model":"deepseek-v4-pro","task":"prove","level":3,"exit":0,"sec":222,"result":{"ok":true,"accepted":6,"flips":2,"why":""}}
+{"model":"deepseek-v4-pro","task":"prove","level":5,"exit":0,"sec":570,"result":{"ok":true,"accepted":4,"flips":4,"why":""}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"solve","level":3,"exit":0,"sec":224,"result":{"ok":true,"flips":2,"dark":0,"why":""}}
+{"model":"deepseek-v4-pro","task":"prove","level":9,"exit":0,"sec":243,"result":{"ok":true,"accepted":7,"flips":6,"why":""}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"prove","level":3,"exit":0,"sec":514,"result":{"ok":true,"accepted":3,"flips":2,"why":""}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"solve","level":9,"exit":0,"sec":242,"result":{"ok":true,"flips":6,"dark":0,"why":""}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"solve","level":14,"exit":0,"sec":196,"result":{"ok":true,"flips":7,"dark":0,"why":""}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"prove","level":9,"exit":0,"sec":510,"result":{"ok":true,"accepted":7,"flips":6,"why":""}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"solve","level":18,"exit":124,"sec":901,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"kimi-k3.1-pro","agent":"plain","task":"solve","level":3,"exit":0,"sec":31,"result":{"ok":true,"flips":2,"dark":0,"why":""}}
+{"model":"gpt-6-luna","agent":"plain","task":"solve","level":3,"exit":0,"sec":36,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"qwen4-max","agent":"plain","task":"solve","level":3,"exit":0,"sec":45,"result":{"ok":true,"flips":2,"dark":0,"why":""}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"prove","level":14,"exit":124,"sec":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"gpt-6-luna","agent":"plain","task":"solve","level":5,"exit":0,"sec":30,"result":{"ok":true,"flips":4,"dark":0,"why":""}}
+{"model":"glm-5.3","agent":"plain","task":"solve","level":3,"exit":0,"sec":73,"result":{"ok":true,"flips":2,"dark":0,"why":""}}
+{"model":"gemini-4-argon","agent":"plain","task":"solve","level":3,"exit":1,"sec":78,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"gpt-6-luna","agent":"plain","task":"solve","level":9,"exit":0,"sec":27,"result":{"ok":false,"flips":6,"dark":1,"why":"1 target(s) dark"}}
+{"model":"kimi-k3.1-pro","agent":"plain","task":"solve","level":5,"exit":0,"sec":70,"result":{"ok":true,"flips":4,"dark":0,"why":""}}
+{"model":"qwen4-max","agent":"plain","task":"solve","level":5,"exit":0,"sec":63,"result":{"ok":true,"flips":4,"dark":0,"why":""}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"solve","level":5,"exit":0,"sec":103,"result":{"ok":true,"flips":4,"dark":0,"why":""}}
+{"model":"gpt-6-luna","agent":"plain","task":"solve","level":12,"exit":0,"sec":26,"result":{"ok":false,"flips":8,"dark":1,"why":"1 target(s) dark"}}
+{"model":"kimi-k3.1-pro","agent":"plain","task":"solve","level":9,"exit":0,"sec":43,"result":{"ok":true,"flips":6,"dark":0,"why":""}}
+{"model":"gemini-4-argon","agent":"plain","task":"solve","level":5,"exit":1,"sec":75,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"gpt-6-luna","agent":"plain","task":"solve","level":14,"exit":0,"sec":72,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"kimi-k3.1-pro","agent":"plain","task":"solve","level":12,"exit":0,"sec":60,"result":{"ok":true,"flips":8,"dark":0,"why":""}}
+{"model":"glm-5.3","agent":"plain","task":"solve","level":5,"exit":0,"sec":135,"result":{"ok":true,"flips":4,"dark":0,"why":""}}
+{"model":"qwen4-max","agent":"plain","task":"solve","level":9,"exit":0,"sec":107,"result":{"ok":true,"flips":6,"dark":0,"why":""}}
+{"model":"gemini-4-argon","agent":"plain","task":"solve","level":9,"exit":1,"sec":77,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"gpt-6-luna","agent":"plain","task":"solve","level":17,"exit":0,"sec":51,"result":{"ok":true,"flips":5,"dark":0,"why":""}}
+{"model":"gpt-6-luna","agent":"plain","task":"prove","level":3,"exit":0,"sec":51,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"gemini-4-argon","agent":"plain","task":"solve","level":12,"exit":1,"sec":72,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"kimi-k3.1-pro","agent":"plain","task":"solve","level":14,"exit":0,"sec":99,"result":{"ok":true,"flips":7,"dark":0,"why":""}}
+{"model":"kimi-k3.1-pro","agent":"plain","task":"solve","level":17,"exit":0,"sec":49,"result":{"ok":true,"flips":5,"dark":0,"why":""}}
+{"model":"glm-5.3","agent":"plain","task":"solve","level":9,"exit":0,"sec":152,"result":{"ok":false,"why":"[4,1] is not a mirror"}}
+{"model":"qwen4-max","agent":"plain","task":"solve","level":12,"exit":0,"sec":154,"result":{"ok":true,"flips":8,"dark":0,"why":""}}
+{"model":"gemini-4-argon","agent":"plain","task":"solve","level":14,"exit":1,"sec":91,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"gpt-6-luna","agent":"plain","task":"prove","level":5,"exit":0,"sec":104,"result":{"ok":true,"accepted":4,"flips":4,"why":""}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"solve","level":12,"exit":0,"sec":314,"result":{"ok":true,"flips":8,"dark":0,"why":""}}
+{"model":"kimi-k3.1-pro","agent":"plain","task":"prove","level":3,"exit":0,"sec":97,"result":{"ok":true,"accepted":3,"flips":2,"why":""}}
+{"model":"gemini-4-argon","agent":"plain","task":"solve","level":17,"exit":1,"sec":71,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"gpt-6-luna","agent":"plain","task":"prove","level":9,"exit":0,"sec":103,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"kimi-k3.1-pro","agent":"plain","task":"prove","level":5,"exit":0,"sec":85,"result":{"ok":true,"accepted":5,"flips":4,"why":""}}
+{"model":"gemini-4-argon","agent":"plain","task":"prove","level":3,"exit":1,"sec":76,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"qwen4-max","agent":"plain","task":"solve","level":14,"exit":0,"sec":204,"result":{"ok":true,"flips":7,"dark":0,"why":""}}
+{"model":"gemini-4-argon","agent":"plain","task":"prove","level":5,"exit":1,"sec":71,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"glm-5.3","agent":"plain","task":"solve","level":12,"exit":0,"sec":252,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"gpt-6-luna","agent":"plain","task":"prove","level":12,"exit":0,"sec":132,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"kimi-k3.1-pro","agent":"plain","task":"prove","level":9,"exit":0,"sec":141,"result":{"ok":true,"accepted":7,"flips":6,"why":""}}
+{"model":"gpt-6-luna","agent":"plain","task":"prove","level":14,"exit":0,"sec":49,"result":{"ok":false,"accepted":0,"flips":0,"why":"claim 1 [0,0,\"flip\"] not provable at that point"}}
+{"model":"gemini-4-argon","agent":"plain","task":"prove","level":9,"exit":1,"sec":73,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"qwen4-max","agent":"plain","task":"solve","level":17,"exit":0,"sec":164,"result":{"ok":true,"flips":5,"dark":0,"why":""}}
+{"model":"gemini-4-argon","agent":"plain","task":"prove","level":12,"exit":1,"sec":75,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"prove","level":18,"exit":0,"sec":734,"result":{"ok":true,"accepted":6,"flips":6,"why":""}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"solve","level":17,"exit":0,"sec":369,"result":{"ok":false,"flips":5,"dark":1,"why":"1 target(s) dark"}}
+{"model":"gpt-6-luna","agent":"plain","task":"prove","level":17,"exit":0,"sec":144,"result":{"ok":false,"empty":true,"why":"answered: no claim is provable"}}
+{"model":"glm-5.3","agent":"plain","task":"solve","level":14,"exit":0,"sec":236,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"qwen4-max","agent":"plain","task":"prove","level":3,"exit":0,"sec":288,"result":{"ok":true,"accepted":3,"flips":2,"why":""}}
+{"model":"kimi-k3.1-pro","agent":"plain","task":"prove","level":12,"exit":0,"sec":447,"result":{"ok":false,"accepted":0,"flips":0,"why":"claim 1 [5,0,\"flip\"] not provable at that point"}}
+{"model":"gemini-4-argon","agent":"plain","task":"prove","level":14,"exit":124,"sec":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"prove","level":5,"exit":124,"sec":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"grok-4.7","agent":"plain","task":"solve","level":3,"exit":124,"sec":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"glm-5.3","agent":"plain","task":"solve","level":17,"exit":124,"sec":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"qwen4-max","agent":"plain","task":"prove","level":5,"exit":124,"sec":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"kimi-k3.1-pro","agent":"plain","task":"prove","level":14,"exit":124,"sec":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"gemini-4-argon","agent":"plain","task":"prove","level":17,"exit":124,"sec":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"prove","level":12,"exit":124,"sec":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"grok-4.7","agent":"plain","task":"solve","level":5,"exit":124,"sec":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"glm-5.3","agent":"plain","task":"prove","level":3,"exit":124,"sec":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"qwen4-max","agent":"plain","task":"prove","level":9,"exit":124,"sec":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"kimi-k3.1-pro","agent":"plain","task":"prove","level":17,"exit":124,"sec":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"prove","level":17,"exit":124,"sec":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"grok-4.7","agent":"plain","task":"solve","level":9,"exit":124,"sec":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"glm-5.3","agent":"plain","task":"prove","level":5,"exit":124,"sec":901,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"qwen4-max","agent":"plain","task":"prove","level":12,"exit":124,"sec":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"glm-5.3","agent":"plain","task":"prove","level":9,"exit":124,"sec":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"qwen4-max","agent":"plain","task":"prove","level":14,"exit":124,"sec":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"glm-5.3","agent":"plain","task":"prove","level":12,"exit":124,"sec":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"qwen4-max","agent":"plain","task":"prove","level":17,"exit":124,"sec":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"glm-5.3","agent":"plain","task":"prove","level":14,"exit":124,"sec":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"prove","level":5,"exit":124,"sec":2400,"limit":2400,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"kimi-k3.1-pro","agent":"plain","task":"prove","level":14,"exit":124,"sec":2400,"limit":2400,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"glm-5.3","agent":"plain","task":"prove","level":17,"exit":124,"sec":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"prove","level":3,"exit":0,"sec":160,"limit":900,"usd":0.017931999999999997,"result":{"ok":true,"accepted":3,"flips":2,"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"solve","level":3,"exit":0,"sec":11,"limit":900,"usd":0.02842,"result":{"ok":true,"flips":2,"dark":0,"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"solve","level":3,"exit":0,"sec":12,"limit":900,"usd":0.018596,"result":{"ok":true,"flips":2,"dark":0,"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"solve","level":5,"exit":0,"sec":15,"limit":900,"usd":0.038536,"result":{"ok":true,"flips":4,"dark":0,"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"solve","level":5,"exit":0,"sec":14,"limit":900,"usd":0.022674000000000003,"result":{"ok":true,"flips":4,"dark":0,"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"solve","level":9,"exit":0,"sec":21,"limit":900,"usd":0.031194,"result":{"ok":false,"flips":6,"dark":1,"why":"1 target(s) dark"}}
+{"model":"claude-opus-5-5","agent":"plain","task":"solve","level":9,"exit":0,"sec":22,"limit":900,"usd":0.048836000000000004,"result":{"ok":true,"flips":6,"dark":0,"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"solve","level":12,"exit":0,"sec":33,"limit":900,"usd":0.050928,"result":{"ok":true,"flips":8,"dark":0,"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"solve","level":12,"exit":0,"sec":35,"limit":900,"usd":0.075184,"result":{"ok":true,"flips":8,"dark":0,"why":""}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"prove","level":5,"exit":0,"sec":99,"limit":900,"usd":0.0114539,"result":{"ok":true,"accepted":4,"flips":4,"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"solve","level":14,"exit":0,"sec":33,"limit":900,"usd":0.07504399999999999,"result":{"ok":true,"flips":7,"dark":0,"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"solve","level":14,"exit":0,"sec":40,"limit":900,"usd":0.057928,"result":{"ok":true,"flips":7,"dark":0,"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"solve","level":17,"exit":0,"sec":23,"limit":900,"usd":0.033907999999999994,"result":{"ok":true,"flips":5,"dark":0,"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"solve","level":17,"exit":0,"sec":39,"limit":900,"usd":0.081804,"result":{"ok":true,"flips":5,"dark":0,"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"prove","level":3,"exit":0,"sec":41,"limit":900,"usd":0.05722599999999999,"result":{"ok":true,"accepted":3,"flips":2,"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"prove","level":3,"exit":0,"sec":43,"limit":900,"usd":0.09181999999999998,"result":{"ok":true,"accepted":3,"flips":2,"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"prove","level":5,"exit":0,"sec":25,"limit":900,"usd":0.039674,"result":{"ok":true,"accepted":4,"flips":4,"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"prove","level":5,"exit":0,"sec":34,"limit":900,"usd":0.08045599999999999,"result":{"ok":true,"accepted":5,"flips":4,"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"prove","level":9,"exit":0,"sec":42,"limit":900,"usd":0.097296,"result":{"ok":true,"accepted":9,"flips":6,"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"prove","level":9,"exit":0,"sec":67,"limit":900,"usd":0.097104,"result":{"ok":true,"accepted":7,"flips":6,"why":""}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"prove","level":9,"exit":0,"sec":224,"limit":900,"usd":0.0273079,"result":{"ok":true,"accepted":7,"flips":6,"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"prove","level":12,"exit":0,"sec":68,"limit":900,"usd":0.10005800000000001,"result":{"ok":true,"accepted":9,"flips":8,"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"prove","level":12,"exit":0,"sec":74,"limit":900,"usd":0.16804400000000003,"result":{"ok":true,"accepted":10,"flips":8,"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"prove","level":14,"exit":0,"sec":106,"limit":900,"usd":0.229544,"result":{"ok":true,"accepted":11,"flips":7,"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"prove","level":14,"exit":0,"sec":114,"limit":900,"usd":0.164138,"result":{"ok":true,"accepted":8,"flips":7,"why":""}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"prove","level":12,"exit":0,"sec":203,"limit":900,"usd":0.0242681,"result":{"ok":true,"accepted":9,"flips":8,"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"prove","level":17,"exit":0,"sec":126,"limit":900,"usd":0.272484,"result":{"ok":true,"accepted":6,"flips":5,"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"prove","level":17,"exit":0,"sec":130,"limit":900,"usd":0.18341799999999997,"result":{"ok":true,"accepted":6,"flips":5,"why":""}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"prove","level":14,"exit":0,"sec":151,"limit":900,"usd":0.0176991,"result":{"ok":false,"accepted":3,"flips":2,"why":"claim 4 [5,5,\"stay\"] not provable at that point"}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"prove","level":17,"exit":0,"sec":170,"limit":900,"usd":0.0204641,"result":{"ok":true,"accepted":6,"flips":5,"why":""}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"solve","level":3,"exit":0,"sec":12,"limit":900,"usd":0.0015244999999999998,"result":{"ok":true,"flips":2,"dark":0,"why":""}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"solve","level":5,"exit":0,"sec":18,"limit":900,"usd":0.0021519,"result":{"ok":true,"flips":4,"dark":0,"why":""}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"solve","level":9,"exit":0,"sec":50,"limit":900,"usd":0.0058904,"result":{"ok":true,"flips":6,"dark":0,"why":""}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"solve","level":12,"exit":0,"sec":83,"limit":900,"usd":0.0098276,"result":{"ok":true,"flips":8,"dark":0,"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"solve","level":101,"exit":0,"sec":114,"limit":1800,"usd":0.26297200000000004,"result":{"ok":true,"flips":14,"dark":0,"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"solve","level":101,"exit":0,"sec":115,"limit":1800,"usd":0.168892,"result":{"ok":true,"flips":14,"dark":0,"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"solve","level":102,"exit":0,"sec":55,"limit":1800,"usd":0.126524,"result":{"ok":true,"flips":12,"dark":0,"why":""}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"solve","level":14,"exit":0,"sec":103,"limit":900,"usd":0.0126511,"result":{"ok":true,"flips":7,"dark":0,"why":""}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"solve","level":17,"exit":0,"sec":64,"limit":900,"usd":0.007529599999999999,"result":{"ok":true,"flips":5,"dark":0,"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"solve","level":102,"exit":0,"sec":144,"limit":1800,"usd":0.200688,"result":{"ok":true,"flips":12,"dark":0,"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"solve","level":103,"exit":0,"sec":152,"limit":1800,"usd":0.35499200000000003,"result":{"ok":true,"flips":15,"dark":0,"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"solve","level":103,"exit":0,"sec":216,"limit":1800,"usd":0.313652,"result":{"ok":true,"flips":15,"dark":0,"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"solve","level":104,"exit":0,"sec":156,"limit":1800,"usd":0.355816,"result":{"ok":true,"flips":16,"dark":0,"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"solve","level":105,"exit":0,"sec":166,"limit":1800,"usd":0.37848399999999993,"result":{"ok":true,"flips":18,"dark":0,"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"solve","level":106,"exit":1,"sec":171,"limit":1800,"usd":0.37572,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"solve","level":104,"exit":0,"sec":366,"limit":1800,"usd":0.531544,"result":{"ok":true,"flips":16,"dark":0,"why":""}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"solve","level":101,"exit":0,"sec":292,"limit":1800,"usd":0.036289300000000003,"result":{"ok":false,"flips":14,"dark":1,"why":"1 target(s) dark"}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"solve","level":105,"exit":0,"sec":146,"limit":1800,"usd":0.216308,"result":{"ok":true,"flips":18,"dark":0,"why":""}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"solve","level":102,"exit":0,"sec":113,"limit":1800,"usd":0.0137496,"result":{"ok":true,"flips":12,"dark":0,"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"solve","level":106,"exit":0,"sec":278,"limit":1800,"usd":0.425382,"result":{"ok":true,"flips":14,"dark":0,"why":""}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"solve","level":103,"exit":0,"sec":307,"limit":1800,"usd":0.0371783,"result":{"ok":true,"flips":15,"dark":0,"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"prove","level":101,"exit":0,"sec":140,"limit":1800,"usd":0.322252,"result":{"ok":true,"accepted":17,"flips":14,"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"prove","level":101,"exit":0,"sec":50,"limit":1800,"usd":0.071292,"result":{"ok":false,"accepted":0,"flips":0,"why":"claim 1 [3,0,\"flip\"] not provable at that point"}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"prove","level":102,"exit":0,"sec":234,"limit":1800,"usd":0.348388,"result":{"ok":true,"accepted":13,"flips":12,"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"prove","level":102,"exit":0,"sec":240,"limit":1800,"usd":0.544144,"result":{"ok":true,"accepted":15,"flips":12,"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"prove","level":103,"exit":0,"sec":180,"limit":1800,"usd":0.40742,"result":{"ok":false,"empty":true,"why":"answered: no claim is provable"}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"solve","level":104,"exit":0,"sec":501,"limit":1800,"usd":0.0591964,"result":{"ok":false,"flips":16,"dark":1,"why":"1 target(s) dark"}}
+{"model":"claude-opus-5-5","agent":"plain","task":"prove","level":104,"exit":1,"sec":193,"limit":1800,"usd":0.437468,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"solve","level":105,"exit":0,"sec":197,"limit":1800,"usd":0.0233956,"result":{"ok":false,"flips":1,"dark":3,"why":"3 target(s) dark"}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"prove","level":103,"exit":0,"sec":502,"limit":1800,"usd":0.7579020000000001,"result":{"ok":true,"accepted":21,"flips":15,"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"prove","level":105,"exit":0,"sec":162,"limit":1800,"usd":0.383004,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"claude-opus-5-5","agent":"plain","task":"prove","level":106,"exit":0,"sec":187,"limit":1800,"usd":0.450792,"result":{"ok":true,"accepted":24,"flips":14,"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"prove","level":104,"exit":0,"sec":333,"limit":1800,"usd":0.503464,"result":{"ok":true,"accepted":19,"flips":16,"why":""}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"solve","level":106,"exit":0,"sec":458,"limit":1800,"usd":0.0549593,"result":{"ok":false,"flips":7,"dark":1,"why":"1 target(s) dark"}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"prove","level":101,"exit":0,"sec":68,"limit":1800,"usd":0.007694299999999999,"result":{"ok":false,"empty":true,"why":"answered: no claim is provable"}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"prove","level":102,"exit":0,"sec":475,"limit":1800,"usd":0.0582931,"result":{"ok":true,"accepted":13,"flips":12,"why":""}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"prove","level":103,"exit":0,"sec":38,"limit":1800,"usd":0.0044068,"result":{"ok":false,"empty":true,"why":"answered: no claim is provable"}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"prove","level":104,"exit":0,"sec":90,"limit":1800,"usd":0.0105319,"result":{"ok":false,"accepted":4,"flips":2,"why":"only 2 of 16 flips proven"}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"prove","level":105,"exit":0,"sec":65,"limit":1800,"usd":0.007344599999999999,"result":{"ok":false,"empty":true,"why":"answered: no claim is provable"}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"prove","level":105,"exit":0,"sec":853,"limit":1800,"usd":1.2849679999999999,"result":{"ok":true,"accepted":25,"flips":18,"why":""}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"prove","level":106,"exit":0,"sec":99,"limit":1800,"usd":0.011698300000000002,"result":{"ok":false,"accepted":2,"flips":1,"why":"only 1 of 14 flips proven"}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"prove","level":106,"exit":0,"sec":292,"limit":1800,"usd":0.441422,"result":{"ok":true,"accepted":19,"flips":14,"why":""}}

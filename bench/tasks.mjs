@@ -8,6 +8,10 @@ import { parseBoard } from '../src/boards.js';
 import { traceGhost, UNDECIDED } from '../src/ghost.js';
 import { targets } from '../src/engine.js';
 
+// Levels 1..28 are the game's; 101.. are the bigger ladder boards in ladder.json (see ladder-search.mjs).
+const LADDER = JSON.parse(readFileSync(new URL('./ladder.json', import.meta.url), 'utf8'));
+const levelAt = (k) => (k >= 100 ? LADDER[k - 100] : LEVELS[k]);
+
 const LEGEND = `Board legend (one character per cell; columns are numbered from 0 left to right, rows from 0 top to bottom):
   .  empty          #  wall (stops light)
   /  mirror tilted like "/"     \\  mirror tilted like "\\"
@@ -23,7 +27,7 @@ const show = (rows) => rows.map((r, y) => `${String(y).padStart(2)} ${r}`).join(
   + '\n   ' + [...rows[0]].map((_, x) => x % 10).join('');
 
 export function prompt(task, k) {
-  const l = LEVELS[k];
+  const l = levelAt(k);
   const head = `${LEGEND}\n\nThe board (row number, then the row; column digits underneath):\n${show(l.rows)}\n\n`;
   if (task === 'solve') return head + `Goal: light every target at the same time by flipping exactly ${l.par} mirrors.
 Answer with your reasoning, then on the LAST line a JSON array of the mirrors to flip as [column,row] pairs, e.g.
@@ -47,7 +51,7 @@ function lastJson(text) {
 }
 
 export function check(task, k, text) {
-  const l = LEVELS[k], g = parseBoard(l.rows), goal = targets(g), ans = lastJson(text);
+  const l = levelAt(k), g = parseBoard(l.rows), goal = targets(g), ans = lastJson(text);
   if (!Array.isArray(ans)) return { ok: false, why: 'no JSON answer' };
   if (!ans.length) return { ok: false, empty: true, why: task === 'solve' ? 'answered: no solution exists' : 'answered: no claim is provable' };
   const at = (x, y) => (Number.isInteger(x) && Number.isInteger(y) && x >= 0 && y >= 0 && x < g.w && y < g.h ? y * g.w + x : -1);

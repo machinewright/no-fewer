@@ -11,7 +11,11 @@ for (const dir of readdirSync('out')) for (const f of readdirSync(`out/${dir}`))
   const m = f.match(/^(solve|prove)-(\d+)\.txt$/); if (!m) continue;
   const key = `${dir}/${m[1]}-${m[2]}`, run = runs.get(key); if (!run) continue; // still running
   const text = readFileSync(`out/${key}.txt`, 'utf8');
-  const infra = /Upstream request failed|exceeded its monthly spending cap|rate limit/i.test(text);
+  // Claude runs keep the CLI's JSON next to the transcript; a run the API ended with a safety stop, or
+  // whose answer says it was withheld after one, is not scored. (A stop followed by a complete answer is scored.)
+  const meta = existsSync(`out/${key}.txt.json`) ? (() => { try { return JSON.parse(readFileSync(`out/${key}.txt.json`, 'utf8')); } catch { return {}; } })() : {};
+  const stopped = meta.is_error === true || meta.stop_reason === 'refusal' || /stopped by a safety classifier/.test(text);
+  const infra = stopped || /Upstream request failed|exceeded its monthly spending cap|rate limit|can't respond to this message with/i.test(text);
   const body = text.replace(/\x1b\[[0-9;]*m/g, '').replace(/^\s*> \S+ · \S+\s*/m, '').trim();
   // An empty transcript means no answer arrived: on 2026-11-21 the OpenCode Go weekly limit was hit and runs hung
   // silently until the timeout. Those are not scored (noanswer), only rerun.
