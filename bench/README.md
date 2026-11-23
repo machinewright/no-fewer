@@ -47,6 +47,21 @@ One run per cell, no tools, so read these as a pilot, not a measurement. "Game" 
 
 gemini-4-argon: every run returned the provider's "monthly spending cap" error (infrastructure, not scored).
 
+**Cases task** (added 2026-11-23; one case split needed; "small" = game levels 23 to 28, 6x6 to 9x9, par 4 to 6;
+"big" = levels 111 to 114, 12x12 and 14x14, par 12 to 18, exactly one mirror whose split closes both cases):
+
+| model | cases, small | cases, big |
+|---|---|---|
+| claude-sonnet-5-5 | 4/6 | 1/1 |
+| claude-haiku-5-5 | 6/6 | 0/4 |
+
+Sonnet's two small failures are both unsound claims before the split: on level 23 it claimed (5,4) must flip because
+"light can only enter (5,5) from (5,4)", missing a four-mirror route that reaches (5,5) from above through (4,5). On
+big level 112 it hit the run's cost cap after 14 minutes, so that run is unscored; I stopped Sonnet's chain there
+(113 and 114 not run, to stay inside the day's budget). Haiku's big-board failures are honest
+abstentions again ("I did not establish any accepted claim... could not finish"), each followed by a placeholder answer.
+Opus has not run this task yet. OpenCode models are queued (rerun-cases.sh).
+
 What it shows, and what it doesn't:
 
 - **The question's premise didn't hold up.** I expected proving to be much harder than solving. For the models that
@@ -64,5 +79,5 @@ What it shows, and what it doesn't:
 - **Four Opus runs on the ladder are unscored.** The API ended them with a safety stop partway through the reasoning
   (nothing to do with the puzzle). I did not rephrase or retry around it.
 
-Next: rerun the unanswered OpenCode cells; add the proof-by-cases levels as a third task; repeat runs before
+Next: rerun the unanswered OpenCode cells; score the cases task for the OpenCode models and Opus; repeat runs before
 claiming anything about a single model.

@@ -204,3 +204,33 @@
 {"model":"grok-4.7","agent":"plain","task":"prove","level":5,"exit":0,"sec":318,"limit":2400,"result":{"ok":true,"accepted":4,"flips":4,"why":""}}
 {"model":"deepseek-v4-pro","agent":"plain","task":"solve","level":102,"exit":124,"sec":900,"limit":900,"result":{"ok":false,"empty":true,"why":"answered: no solution exists"}}
 {"model":"grok-4.7","agent":"plain","task":"prove","level":9,"exit":0,"sec":985,"limit":2400,"result":{"ok":true,"accepted":7,"flips":6,"why":""}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"prove","level":14,"exit":1,"sec":0,"limit":2400,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"cases","level":23,"exit":0,"sec":46,"limit":900,"usd":0.068358,"result":{"ok":false,"why":"before: claim 1 [5,4,\"flip\"] not provable at that point"}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"cases","level":24,"exit":0,"sec":81,"limit":900,"usd":0.11850000000000001,"result":{"ok":true,"cases":{"ifStay":"4 flips","ifFlip":"4 flips"},"why":""}}
+{"model":"glm-5.3","agent":"plain","task":"solve","level":14,"exit":0,"sec":251,"limit":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"kimi-k3.1-pro","agent":"plain","task":"prove","level":102,"exit":0,"sec":261,"limit":2400,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"cases","level":23,"exit":0,"sec":161,"limit":900,"usd":0.0190941,"result":{"ok":true,"cases":{"ifStay":"impossible","ifFlip":"4 flips"},"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"cases","level":25,"exit":0,"sec":94,"limit":900,"usd":0.12935200000000002,"result":{"ok":true,"cases":{"ifStay":"6 flips","ifFlip":"6 flips"},"why":""}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"cases","level":24,"exit":0,"sec":178,"limit":900,"usd":0.021105199999999998,"result":{"ok":true,"cases":{"ifStay":"4 flips","ifFlip":"4 flips"},"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"cases","level":26,"exit":0,"sec":167,"limit":900,"usd":0.240058,"result":{"ok":true,"cases":{"ifStay":"5 flips","ifFlip":"5 flips"},"why":""}}
+{"model":"glm-5.3","agent":"plain","task":"solve","level":17,"exit":0,"sec":261,"limit":900,"result":{"ok":true,"flips":5,"dark":0,"why":""}}
+{"model":"kimi-k3.1-pro","agent":"plain","task":"prove","level":103,"exit":0,"sec":328,"limit":2400,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"cases","level":27,"exit":0,"sec":109,"limit":900,"usd":0.152788,"result":{"ok":true,"cases":{"ifStay":"6 flips","ifFlip":"6 flips"},"why":""}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"cases","level":25,"exit":0,"sec":182,"limit":900,"usd":0.022334299999999998,"result":{"ok":true,"cases":{"ifStay":"6 flips","ifFlip":"6 flips"},"why":""}}
+{"model":"glm-5.3","agent":"plain","task":"prove","level":3,"exit":0,"sec":335,"limit":2400,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"cases","level":28,"exit":0,"sec":141,"limit":900,"usd":0.1941588,"result":{"ok":false,"why":"before: claim 3 [3,6,\"flip\"] not provable at that point"}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"cases","level":26,"exit":0,"sec":318,"limit":900,"usd":0.0358671,"result":{"ok":true,"cases":{"ifStay":"5 flips","ifFlip":"5 flips"},"why":""}}
+{"model":"glm-5.3","agent":"plain","task":"prove","level":9,"exit":0,"sec":258,"limit":2400,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"cases","level":111,"exit":0,"sec":135,"limit":1500,"usd":0.016578299999999997,"result":{"ok":false,"cases":{"ifStay":"impossible","ifFlip":"5 flips"},"why":"ifFlip not closed: 5 of 16 flips, every target still reachable"}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"cases","level":27,"exit":0,"sec":238,"limit":900,"usd":0.027712099999999996,"result":{"ok":true,"cases":{"ifStay":"6 flips","ifFlip":"6 flips"},"why":""}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"solve","level":103,"exit":0,"sec":655,"limit":900,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"cases","level":112,"exit":0,"sec":182,"limit":1500,"usd":0.0215201,"result":{"ok":false,"cases":{"ifStay":"5 flips"},"why":"ifStay not closed: 5 of 16 flips, every target still reachable"}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"cases","level":113,"exit":0,"sec":32,"limit":1500,"usd":0.0040903,"result":{"ok":false,"cases":{"ifStay":"0 flips"},"why":"ifStay not closed: 0 of 18 flips, every target still reachable"}}
+{"model":"glm-5.3","agent":"plain","task":"prove","level":12,"exit":0,"sec":287,"limit":2400,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"cases","level":114,"exit":0,"sec":45,"limit":1500,"usd":0.0052524,"result":{"ok":false,"cases":{"ifStay":"0 flips"},"why":"ifStay not closed: 0 of 12 flips, every target still reachable"}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"cases","level":111,"exit":0,"sec":508,"limit":1500,"usd":0.737122,"result":{"ok":true,"cases":{"ifStay":"16 flips","ifFlip":"16 flips"},"why":""}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"cases","level":28,"exit":0,"sec":394,"limit":900,"usd":0.048689500000000004,"result":{"ok":true,"cases":{"ifStay":"6 flips","ifFlip":"6 flips"},"why":""}}
+{"model":"glm-5.3","agent":"plain","task":"prove","level":14,"exit":0,"sec":262,"limit":2400,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"glm-5.3","agent":"plain","task":"prove","level":17,"exit":0,"sec":266,"limit":2400,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"prove","level":101,"exit":0,"sec":1100,"limit":2400,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"cases","level":112,"exit":1,"sec":862,"limit":1500,"usd":1.2867879999999998,"result":{"ok":false,"why":"no JSON answer"}}
