@@ -1,0 +1,33 @@
+@font-face { font-family: "Source Serif 4"; font-style: normal; font-weight: 200 900; font-display: swap;
+  src: url(../fonts/source-serif-4-latin-opsz-normal.woff2) format("woff2"); }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 100 900; font-display: swap;
+  src: url(../fonts/inter-latin-wght-normal.woff2) format("woff2"); }
+:root { --ink: #1f2430; --muted: #646b78; --paper: #fbf9f4; --rule: #e6e0d3; --accent: #a8650f; --panel: #f3efe6;
+  --serif: "Source Serif 4", Charter, Georgia, serif; --sans: Inter, system-ui, sans-serif; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 18px/1.6 var(--serif); }
+main { max-width: 42rem; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+h1 { font-size: 2.4rem; line-height: 1.15; margin: 0 0 .6rem; }
+h2 { font-size: 1.45rem; margin: 2.4rem 0 .6rem; }
+h3 { font-size: 1.12rem; margin: 1.8rem 0 .4rem; }
+.dek { font-size: 1.2rem; line-height: 1.5; margin: 0 0 .8rem; }
+.byline, .foot, figcaption { font: 14px/1.5 var(--sans); color: var(--muted); }
+a { color: var(--accent); }
+code { font-size: .88em; background: var(--panel); padding: 0 .2em; border-radius: 3px; }
+ul { padding-left: 1.2rem; } li { margin: .35rem 0; }
+.tablewrap { overflow-x: auto; margin: 1rem 0; }
+table { border-collapse: collapse; font: 15px/1.4 var(--sans); font-variant-numeric: tabular-nums; width: 100%; }
+th, td { padding: .35rem .6rem; border-bottom: 1px solid var(--rule); text-align: right; white-space: nowrap; }
+th:first-child { text-align: left; font-weight: 500; }
+thead th { font-weight: 600; border-bottom: 2px solid var(--rule); }
+figure { margin: 1.5rem 0; }
+figure svg { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+svg .cell { fill: #fff; stroke: var(--rule); } svg .wall { fill: #3a3f4b; }
+svg .mirror { stroke: var(--ink); stroke-width: 4; stroke-linecap: round; }
+svg .target { fill: none; stroke: #c9820f; stroke-width: 3; }
+svg .lamp { fill: #c9820f; }
+svg .route { fill: none; stroke: #e8a21f; stroke-width: 5; stroke-linejoin: round; opacity: .75; }
+svg .claimed { fill: none; stroke: #b3261e; stroke-width: 2.5; stroke-dasharray: 5 4; }
+svg .ax { font: 12px var(--sans); fill: var(--muted); text-anchor: middle; }
+.foot { margin-top: 3rem; border-top: 1px solid var(--rule); padding-top: 1rem; }
+@media (max-width: 480px) { body { font-size: 17px; } h1 { font-size: 1.9rem; } th, td { padding: .3rem .35rem; } }

@@ -9,6 +9,8 @@ empty=$HOME/work/tmp/bench-claude; mkdir -p "$empty" "out/$model-plain"; here=$P
 rep=${REP:-1}; sfx=""; [ "$rep" -gt 1 ] && sfx=".r$rep"   # REP=2,3...: repeat runs, kept side by side
 for lv in "$@"; do
   f="$here/out/$model-plain/$task-$lv$sfx.txt"; t0=$(date +%s)
+  # SKIPDONE=1: resume a batch; a cell is done when the CLI wrote its final JSON (cost known)
+  [ -n "${SKIPDONE:-}" ] && grep -q total_cost_usd "$f.json" 2>/dev/null && continue
   prompt=$(node tasks.mjs prompt "$task" "$lv")
   (cd "$empty" && timeout ${TIMEOUT:-900} claude -p "$prompt" --model "$model" --tools "" --strict-mcp-config \
      --setting-sources "" --system-prompt "You are a careful puzzle solver. Answer the task you are given." \

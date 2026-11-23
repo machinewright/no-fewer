@@ -24,7 +24,7 @@ Claude models run through `./run-claude.sh <model> <task> <level>...` (Claude Co
 or memory, empty folder): the same `plain` condition.
 
 Levels 1 to 28 are the game's. Levels 101 to 106 are a harder ladder (`ladder.json`, found by `ladder-search.mjs`):
-one-colour boards from 10x10 to 14x14 with 28 to 53 mirrors and par 12 to 18, each one still provable by the claim
+one-colour boards from 10x10 to 14x14 with 29 to 53 mirrors and par 12 to 18, each one still provable by the claim
 rule alone.
 
 ## Results so far (updated 2026-11-23)
