@@ -6,8 +6,12 @@ exists? No Fewer gives both tasks an exact checker on the same boards:
 - **solve**: list at most par mirrors to flip so every target lights (checked by tracing the light).
 - **prove**: list claims ("flip"/"stay") in order; each must pass No Fewer's rule at that point (the opposite choice
   leaves some target dark in ghost light, given earlier claims); par accepted flips prove the bound.
+- **cases** (levels 23 to 28, added 2026-11-23): boards where claims alone stop short of par. The model may split
+  once on a mirror: claims before the split, then claims inside each case. A case closes when the relaxation leaves a
+  target dark (the case is impossible) or when its flips (before + split mirror + case claims) reach par. This is the
+  game's "Suppose" step. The checker accepts the game's own reference proofs and rejects splits that don't close.
 
-Prompts: `node tasks.mjs prompt <solve|prove> <level>` (text board with a legend and the full rule; no pictures).
+Prompts: `node tasks.mjs prompt <solve|prove|cases> <level>` (text board with a legend and the full rule; no pictures).
 Runs: `[AGENT=plain] ./run.sh <model> <task> <level>...` through OpenCode Go models, each in an empty folder so the
 model can't read the levels or the solver. Results append to `results.jsonl`; transcripts in `out/` (not committed).
 

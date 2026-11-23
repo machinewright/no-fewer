@@ -10,7 +10,9 @@ import { targets } from '../src/engine.js';
 
 // Levels 1..28 are the game's; 101.. are the bigger ladder boards in ladder.json (see ladder-search.mjs).
 const LADDER = JSON.parse(readFileSync(new URL('./ladder.json', import.meta.url), 'utf8'));
-const levelAt = (k) => (k >= 100 ? LADDER[k - 100] : LEVELS[k]);
+// Levels 111.. are big boards that need one case split (ladder-cases.json, found by ladder-cases-search.mjs).
+const CASES = JSON.parse(readFileSync(new URL('./ladder-cases.json', import.meta.url), 'utf8'));
+const levelAt = (k) => (k >= 110 ? CASES[k - 110] : k >= 100 ? LADDER[k - 100] : LEVELS[k]);
 
 const LEGEND = `Board legend (one character per cell; columns are numbered from 0 left to right, rows from 0 top to bottom):
   .  empty          #  wall (stops light)
