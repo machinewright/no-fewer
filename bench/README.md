@@ -23,7 +23,7 @@ Levels 1 to 28 are the game's. Levels 101 to 106 are a harder ladder (`ladder.js
 one-colour boards from 10x10 to 14x14 with 28 to 53 mirrors and par 12 to 18, each one still provable by the claim
 rule alone.
 
-## Results so far (2026-11-22)
+## Results so far (updated 2026-11-23)
 
 One run per cell, no tools, so read these as a pilot, not a measurement. "Game" is levels 3, 5, 9, 12, 14, 17;
 "big" is the ladder. Cells are passed / scored.
@@ -33,10 +33,15 @@ One run per cell, no tools, so read these as a pilot, not a measurement. "Game" 
 | claude-opus-5-5 | 6/6 | 6/6 | 5/5 | 3/3 |
 | claude-sonnet-5-5 | 5/6 | 6/6 | 6/6 | 5/6 |
 | claude-haiku-5-5 | 6/6 | 5/6 | 2/6 | 1/6 |
-| kimi-k3.1-pro | 6/6 | 3/4 | | |
-| qwen4-max | 6/6 | 1/1 | | |
-| deepseek-v4-pro (also levels 14, 18 from its pilot) | 5/7 | 3/3 | | |
+| grok-4.7 | 6/6 | 3/3 | | |
+| qwen4-max | 6/6 | 5/6 | | |
+| kimi-k3.1-pro | 6/6 | 4/6 | 1/3 | 1/1 |
+| deepseek-v4-pro (also level 18 from its pilot) | 5/7 | 6/7 | 1/2 | |
+| glm-5.3 | 3/4 | 1/1 | | |
 | gpt-6-luna | 2/6 | 1/6 | | |
+| gemini-4-argon | | | | |
+
+gemini-4-argon: every run returned the provider's "monthly spending cap" error (infrastructure, not scored).
 
 What it shows, and what it doesn't:
 
