@@ -234,3 +234,30 @@
 {"model":"glm-5.3","agent":"plain","task":"prove","level":17,"exit":0,"sec":266,"limit":2400,"result":{"ok":false,"why":"no JSON answer"}}
 {"model":"deepseek-v4-pro","agent":"plain","task":"prove","level":101,"exit":0,"sec":1100,"limit":2400,"result":{"ok":false,"why":"no JSON answer"}}
 {"model":"claude-sonnet-5-5","agent":"plain","task":"cases","level":112,"exit":1,"sec":862,"limit":1500,"usd":1.2867879999999998,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"grok-4.7","agent":"plain","task":"prove","level":12,"exit":0,"sec":629,"limit":2400,"result":{"ok":true,"accepted":9,"flips":8,"why":""}}
+{"model":"grok-4.7","agent":"plain","task":"prove","level":14,"exit":0,"sec":1026,"limit":2400,"result":{"ok":true,"accepted":14,"flips":7,"why":""}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"prove","level":102,"exit":0,"sec":1418,"limit":2400,"result":{"ok":true,"accepted":14,"flips":12,"why":""}}
+{"model":"grok-4.7","agent":"plain","task":"prove","level":17,"exit":0,"sec":697,"limit":2400,"result":{"ok":true,"accepted":9,"flips":5,"why":""}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"prove","level":103,"exit":0,"sec":745,"limit":2400,"result":{"ok":true,"accepted":26,"flips":15,"why":""}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"cases","level":23,"exit":0,"sec":458,"limit":1500,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"grok-4.7","agent":"plain","task":"cases","level":23,"exit":0,"sec":1119,"limit":1500,"result":{"ok":true,"cases":{"ifStay":"impossible","ifFlip":"4 flips"},"why":""}}
+{"model":"qwen4-max","agent":"plain","task":"cases","level":23,"exit":0,"sec":156,"limit":1500,"result":{"ok":true,"cases":{"ifStay":"impossible","ifFlip":"4 flips"},"why":""}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"cases","level":24,"exit":124,"sec":1500,"limit":1500,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"kimi-k3.1-pro","agent":"plain","task":"cases","level":23,"exit":0,"sec":134,"limit":1500,"result":{"ok":true,"cases":{"ifStay":"impossible","ifFlip":"4 flips"},"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"cases","level":23,"exit":0,"sec":59,"limit":1500,"usd":0.141392,"result":{"ok":true,"cases":{"ifStay":"impossible","ifFlip":"4 flips"},"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"cases","level":24,"exit":0,"sec":47,"limit":1500,"usd":0.12167599999999999,"result":{"ok":true,"cases":{"ifStay":"4 flips","ifFlip":"4 flips"},"why":""}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"cases","level":23,"rep":2,"exit":0,"sec":124,"limit":1500,"usd":0.014955600000000001,"result":{"ok":true,"cases":{"ifStay":"impossible","ifFlip":"4 flips"},"why":""}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"cases","level":23,"exit":0,"sec":291,"limit":1500,"result":{"ok":true,"cases":{"ifStay":"impossible","ifFlip":"4 flips"},"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"cases","level":25,"exit":1,"sec":116,"limit":1500,"usd":0.27603599999999995,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"claude-opus-5-5","agent":"plain","task":"cases","level":26,"exit":0,"sec":96,"limit":1500,"usd":0.22125199999999998,"result":{"ok":true,"cases":{"ifStay":"5 flips","ifFlip":"5 flips"},"why":""}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"cases","level":24,"rep":2,"exit":0,"sec":159,"limit":1500,"usd":0.019249199999999998,"result":{"ok":true,"cases":{"ifStay":"4 flips","ifFlip":"4 flips"},"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"cases","level":27,"exit":0,"sec":63,"limit":1500,"usd":0.15491200000000002,"result":{"ok":true,"cases":{"ifStay":"6 flips","ifFlip":"6 flips"},"why":""}}
+{"model":"claude-haiku-5-5","agent":"plain","task":"cases","level":25,"rep":2,"exit":0,"sec":199,"limit":1500,"usd":0.024533799999999998,"result":{"ok":true,"cases":{"ifStay":"6 flips","ifFlip":"6 flips"},"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"cases","level":28,"exit":0,"sec":199,"limit":1500,"usd":0.48295200000000005,"result":{"ok":true,"cases":{"ifStay":"6 flips","ifFlip":"6 flips"},"why":""}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"cases","level":24,"rep":1,"exit":0,"sec":441,"limit":1500,"result":{"ok":true,"cases":{"ifStay":"4 flips","ifFlip":"4 flips"},"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"cases","level":111,"rep":1,"exit":0,"sec":123,"limit":1500,"usd":0.26224179999999997,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"claude-opus-5-5","agent":"plain","task":"cases","level":112,"rep":1,"exit":0,"sec":101,"limit":1500,"usd":0.24834,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"grok-4.7","agent":"plain","task":"cases","level":24,"rep":1,"exit":0,"sec":828,"limit":1500,"result":{"ok":true,"cases":{"ifStay":"4 flips","ifFlip":"4 flips"},"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"cases","level":113,"rep":1,"exit":0,"sec":113,"limit":1500,"usd":0.27541600000000005,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"qwen4-max","agent":"plain","task":"cases","level":24,"rep":1,"exit":0,"sec":228,"limit":1500,"result":{"ok":true,"cases":{"ifStay":"4 flips","ifFlip":"4 flips"},"why":""}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"cases","level":25,"rep":1,"exit":0,"sec":537,"limit":1500,"result":{"ok":true,"cases":{"ifStay":"6 flips","ifFlip":"6 flips"},"why":""}}
