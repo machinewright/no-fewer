@@ -261,3 +261,22 @@
 {"model":"claude-opus-5-5","agent":"plain","task":"cases","level":113,"rep":1,"exit":0,"sec":113,"limit":1500,"usd":0.27541600000000005,"result":{"ok":false,"why":"no JSON answer"}}
 {"model":"qwen4-max","agent":"plain","task":"cases","level":24,"rep":1,"exit":0,"sec":228,"limit":1500,"result":{"ok":true,"cases":{"ifStay":"4 flips","ifFlip":"4 flips"},"why":""}}
 {"model":"deepseek-v4-pro","agent":"plain","task":"cases","level":25,"rep":1,"exit":0,"sec":537,"limit":1500,"result":{"ok":true,"cases":{"ifStay":"6 flips","ifFlip":"6 flips"},"why":""}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"cases","level":26,"rep":1,"exit":1,"sec":1,"limit":1500,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"kimi-k3.1-pro","agent":"plain","task":"cases","level":24,"rep":1,"exit":0,"sec":176,"limit":1500,"result":{"ok":true,"cases":{"ifStay":"4 flips","ifFlip":"4 flips"},"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"cases","level":113,"rep":1,"exit":0,"sec":448,"limit":1800,"usd":0.663112,"result":{"ok":true,"cases":{"ifStay":"18 flips","ifFlip":"18 flips"},"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"cases","level":114,"rep":1,"exit":0,"sec":288,"limit":1800,"usd":0.431774,"result":{"ok":true,"cases":{"ifStay":"12 flips","ifFlip":"12 flips"},"why":""}}
+{"model":"deepseek-v4-pro","agent":"plain","task":"cases","level":27,"rep":1,"exit":124,"sec":1500,"limit":1500,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"grok-4.7","agent":"plain","task":"cases","level":25,"rep":1,"exit":124,"sec":1500,"limit":1500,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"cases","level":112,"rep":2,"exit":124,"sec":1800,"limit":1800,"usd":null,"result":{"ok":false,"why":"no JSON answer"}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"cases","level":23,"rep":2,"exit":0,"sec":53,"limit":1800,"usd":0.078722,"result":{"ok":true,"cases":{"ifStay":"impossible","ifFlip":"4 flips"},"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"cases","level":24,"rep":2,"exit":0,"sec":102,"limit":1800,"usd":0.14625400000000002,"result":{"ok":false,"why":"before: claim 2 [4,2,\"flip\"] not provable at that point"}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"cases","level":25,"rep":2,"exit":0,"sec":88,"limit":1800,"usd":0.130246,"result":{"ok":true,"cases":{"ifStay":"6 flips","ifFlip":"6 flips"},"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"cases","level":26,"rep":2,"exit":0,"sec":177,"limit":1800,"usd":0.242332,"result":{"ok":true,"cases":{"ifStay":"5 flips","ifFlip":"5 flips"},"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"cases","level":27,"rep":2,"exit":0,"sec":97,"limit":1800,"usd":0.141182,"result":{"ok":true,"cases":{"ifStay":"6 flips","ifFlip":"6 flips"},"why":""}}
+{"model":"claude-sonnet-5-5","agent":"plain","task":"cases","level":28,"rep":2,"exit":0,"sec":153,"limit":1800,"usd":0.23157999999999998,"result":{"ok":true,"cases":{"ifStay":"6 flips","ifFlip":"6 flips"},"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"cases","level":23,"rep":2,"exit":0,"sec":52,"limit":1800,"usd":0.126072,"result":{"ok":true,"cases":{"ifStay":"impossible","ifFlip":"4 flips"},"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"cases","level":24,"rep":2,"exit":0,"sec":67,"limit":1800,"usd":0.16271600000000003,"result":{"ok":true,"cases":{"ifStay":"4 flips","ifFlip":"4 flips"},"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"cases","level":25,"rep":2,"exit":0,"sec":98,"limit":1800,"usd":0.23018000000000002,"result":{"ok":true,"cases":{"ifStay":"6 flips","ifFlip":"6 flips"},"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"cases","level":26,"rep":2,"exit":0,"sec":74,"limit":1800,"usd":0.187412,"result":{"ok":true,"cases":{"ifStay":"5 flips","ifFlip":"5 flips"},"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"cases","level":27,"rep":2,"exit":0,"sec":69,"limit":1800,"usd":0.17223200000000002,"result":{"ok":true,"cases":{"ifStay":"6 flips","ifFlip":"6 flips"},"why":""}}
+{"model":"claude-opus-5-5","agent":"plain","task":"cases","level":28,"rep":2,"exit":0,"sec":93,"limit":1800,"usd":0.225928,"result":{"ok":true,"cases":{"ifStay":"6 flips","ifFlip":"6 flips"},"why":""}}

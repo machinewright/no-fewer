@@ -47,7 +47,7 @@ unreachable or when its flips reach par.</li>
 That makes the proofs machine-checkable. It also matters for what the results mean (more on that below).</p>
 <p>Every model got the board as text (one character per cell, with a legend), the full rule, and nothing else. No
 tools: Claude models ran through the Claude Code CLI with every tool switched off; the others ran through OpenCode
-with a no-tools agent, each in an empty folder so nothing could read the solver. One prompt, one answer, a 15 to 25
+with a no-tools agent, each in an empty folder so nothing could read the solver. One prompt, one answer, a 15 to 30
 minute limit.</p>
 <p>Boards: six game levels (6×6 to 8×8, par 2 to 8); six bigger "ladder" boards (10×10 to 14×14, 29 to 53 mirrors,
 par 12 to 18), found by search so that claims alone can prove them; six small game levels (6×6 to 9×9, par 4 to 6) that need one case split; and
@@ -62,10 +62,10 @@ count. Blank means not run, or no scored run (see "What went wrong in the measur
 <tr><th>claude-opus-5-5</th><td>6/6</td><td>6/6</td><td>5/5</td><td>3/3</td></tr>
 <tr><th>claude-sonnet-5-5</th><td>5/6</td><td>6/6</td><td>6/6</td><td>5/6</td></tr>
 <tr><th>claude-haiku-5-5</th><td>6/6</td><td>5/6</td><td>2/6</td><td>1/6</td></tr>
-<tr><th>grok-4.7</th><td>6/6</td><td>6/6</td><td></td><td></td></tr>
+<tr><th>grok-4.7</th><td>5/5</td><td>6/6</td><td></td><td></td></tr>
 <tr><th>qwen4-max</th><td>6/6</td><td>5/6</td><td></td><td></td></tr>
 <tr><th>kimi-k3.1-pro</th><td>6/6</td><td>4/6</td><td>1/3</td><td>1/1</td></tr>
-<tr><th>deepseek-v4-pro</th><td>5/6</td><td>5/6</td><td>1/3</td><td>2/3</td></tr>
+<tr><th>deepseek-v4-pro</th><td>5/6</td><td>5/5</td><td>0/1</td><td></td></tr>
 <tr><th>glm-5.3</th><td>4/5</td><td>1/1</td><td></td><td></td></tr>
 <tr><th>gpt-6-luna</th><td>2/6</td><td>1/6</td><td></td><td></td></tr>
 </tbody></table></div>
@@ -74,12 +74,12 @@ count. Blank means not run, or no scored run (see "What went wrong in the measur
 <!--table:cases-->
 <div class="tablewrap"><table>
 <thead><tr><th>model</th><th>cases, small</th><th>cases, big</th></tr></thead><tbody>
-<tr><th>claude-opus-5-5</th><td>5/5</td><td></td></tr>
-<tr><th>claude-sonnet-5-5</th><td>4/6</td><td>1/1</td></tr>
+<tr><th>claude-opus-5-5</th><td>11/11</td><td></td></tr>
+<tr><th>claude-sonnet-5-5</th><td>9/12</td><td>3/3</td></tr>
 <tr><th>claude-haiku-5-5</th><td>9/9</td><td>0/4</td></tr>
 <tr><th>grok-4.7</th><td>2/2</td><td></td></tr>
 <tr><th>qwen4-max</th><td>2/2</td><td></td></tr>
-<tr><th>kimi-k3.1-pro</th><td>1/1</td><td></td></tr>
+<tr><th>kimi-k3.1-pro</th><td>2/2</td><td></td></tr>
 <tr><th>deepseek-v4-pro</th><td>3/3</td><td></td></tr>
 </tbody></table></div>
 <!--/table:cases-->
@@ -92,6 +92,17 @@ proof, against 2 to 6 for solving), but they came out right. The likely reason i
 is a list of local facts ("if this mirror stays, light can't reach that target"), and finding a solution already
 requires tracing the same light paths. So this experiment doesn't show that models can prove lower bounds in general.
 It shows that when a proof decomposes into checkable local steps, the models that can solve can usually also prove.</p>
+
+<h3>A case split wasn't where they broke either</h3>
+<p>I added the case-split task because that is where I expected the gap to open: a proof that needs "suppose it
+stays… suppose it flips…" asks the model to plan two arguments at once and to pick the one mirror that makes both
+work. On the small boards it didn't open. Every model passed every scored run, except Sonnet, which failed three of
+twelve. Its three failures were all the same kind of error, an unsound claim before the split (level 23 below is
+one of them), not a wrong split or an unclosed case. On the big boards Sonnet found the one working split on all
+three it answered (16 to 18 flips, both cases closed). Its two runs on 112 ended without an answer (the cost cap, then
+the 30-minute limit), so they are not scored. Haiku, perfect on the small boards, closed none of the four big ones, and said so each time. What
+separated the models was the size of the board, not the shape of the proof. I couldn't measure Opus on the big
+boards: the API's safety system stopped all of those runs (see below).</p>
 
 <h3>Where proofs broke: a true claim with a false reason</h3>
 <!--findings:cases-->
@@ -183,14 +194,22 @@ an empty list. A model that knows when it hasn't proved something is more useful
 more often, and the solve task alone would never have shown this.</p>
 
 <h2>What went wrong in the measuring</h2>
-<p>Two things looked like results and weren't.</p>
+<p>Three things looked like results and weren't.</p>
 <p><strong>Usage limits looked like failures to prove.</strong> On the first day, most of the OpenCode models' proof
 attempts timed out with no answer, which read as "models can't prove." They were the plan's usage limit: the runs
 hung silently until the timeout. Those runs are not scored here; most were rerun later. Anyone running long evaluations through
 a subscription plan should check the provider's logs before reading a timeout as a model's answer.</p>
-<p><strong>Safety stops.</strong> A few Opus runs were ended by the API's safety system partway through the reasoning
+<p><strong>Safety stops.</strong> 8 of 39 Opus runs, including all three big case-split runs, were ended by the API's safety system partway through the reasoning
 (the puzzle has nothing to do with it; the stop names a classifier). They are not scored, and I did not rephrase or
 retry around them.</p>
+<p><strong>A no-tools agent that had a back door.</strong> The OpenCode agent I used for the no-tools runs had every
+file, shell and web tool switched off, but not the one that starts a helper agent. In 10 of about 100 OpenCode runs
+the model used it: it handed the puzzle to a helper with the default tools, which in some runs wrote and ran a Python
+search. I found this only while writing this page, when the supposedly empty folder turned out to hold
+<code>solve.py</code> and <code>proof.py</code>. Those 10 runs are not scored; most of them were DeepSeek's big-board
+attempts, so that row is now mostly blank. Three of those runs had passed (two big-board proofs and one big-board
+solution), and an earlier table in the repository counted them before this correction. The agent now has that tool switched off as well. The Claude runs
+were not affected: the Claude Code CLI ran with every tool off, and none of their transcripts show a tool call.</p>
 <p>gemini-4-argon is missing because every run returned the provider's monthly spending cap error.</p>
 
 <h2>Limits</h2>

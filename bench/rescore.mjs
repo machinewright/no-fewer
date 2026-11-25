@@ -16,14 +16,17 @@ for (const dir of readdirSync('out')) for (const f of readdirSync(`out/${dir}`))
   // whose answer says it was withheld after one, is not scored. (A stop followed by a complete answer is scored.)
   const meta = existsSync(`out/${key}.txt.json`) ? (() => { try { return JSON.parse(readFileSync(`out/${key}.txt.json`, 'utf8')); } catch { return {}; } })() : {};
   const stopped = meta.is_error === true || meta.stop_reason === 'refusal' || /stopped (partway )?by a safety classifier|safeguards flagged/.test(text);
-  const infra = stopped || /Upstream request failed|exceeded its monthly spending cap|rate limit|can't respond to this message with/i.test(text);
+  const infra = stopped || /Upstream request failed|exceeded its monthly spending cap|rate limit|database is locked|can't respond to this message with/i.test(text);
   const body = text.replace(/\x1b\[[0-9;]*m/g, '').replace(/^\s*> \S+ · \S+\s*/m, '').trim();
   // An empty transcript means no answer arrived: on 2026-11-21 the OpenCode Go weekly limit was hit and runs hung
   // silently until the timeout. Those are not scored (noanswer), only rerun.
   const noanswer = body.length < 5;
+  // The OpenCode "plain" agent switched off every tool except task (subagents) until 2026-11-25; in 10 runs a model
+  // started a general subagent, which has tools (some wrote and ran Python). Those runs are not no-tools runs: not scored.
+  const tools = /General Agent/.test(text);
   const res = noanswer ? { ok: false, why: 'no answer received (not scored)' } : m[1] === 'cases' ? checkCases(+m[2] - 1, text) : check(m[1], +m[2] - 1, text);
-  rows.push({ model: run.model, agent: run.agent || 'build', task: m[1], level: +m[2], rep, sec: run.sec, timeout: run.exit === 124, infra, noanswer, ...res });
+  rows.push({ model: run.model, agent: run.agent || 'build', task: m[1], level: +m[2], rep, sec: run.sec, timeout: run.exit === 124, infra, noanswer, tools, ...res });
 }
 rows.sort((a, b) => a.model.localeCompare(b.model) || a.agent.localeCompare(b.agent) || a.task.localeCompare(b.task) || a.level - b.level || a.rep - b.rep);
 writeFileSync('scores.json', JSON.stringify(rows, null, 1));
-for (const r of rows) console.log(`${r.model.padEnd(16)} ${r.agent.padEnd(6)} ${r.task} ${String(r.level).padStart(3)}${r.rep > 1 ? '.r' + r.rep : '   '} ${r.infra ? 'INFRA' : r.noanswer ? '---  ' : r.ok ? 'ok   ' : 'FAIL '} ${String(r.sec).padStart(4)}s ${r.timeout ? 'timeout ' : ''}${r.why || ''}`);
+for (const r of rows) console.log(`${r.model.padEnd(16)} ${r.agent.padEnd(6)} ${r.task} ${String(r.level).padStart(3)}${r.rep > 1 ? '.r' + r.rep : '   '} ${r.tools ? 'TOOLS' : r.infra ? 'INFRA' : r.noanswer ? '---  ' : r.ok ? 'ok   ' : 'FAIL '} ${String(r.sec).padStart(4)}s ${r.timeout ? 'timeout ' : ''}${r.why || ''}`);

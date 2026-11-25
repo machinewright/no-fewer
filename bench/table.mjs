@@ -11,7 +11,7 @@ const COLS = {
 const ORDER = ['claude-opus-5-5', 'claude-sonnet-5-5', 'claude-haiku-5-5', 'grok-4.7', 'qwen4-max', 'kimi-k3.1-pro', 'deepseek-v4-pro', 'glm-5.3', 'gpt-6-luna'];
 export function cell(model, task, levels) {
   const rs = rows.filter((r) => r.model === model && r.task === task && levels.includes(r.level));
-  const scored = rs.filter((r) => !r.infra && !r.noanswer);
+  const scored = rs.filter((r) => !r.infra && !r.noanswer && !r.tools);
   return { pass: scored.filter((r) => r.ok).length, n: scored.length, unscored: rs.length - scored.length };
 }
 function table(name) {
