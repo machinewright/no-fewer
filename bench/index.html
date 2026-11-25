@@ -96,10 +96,10 @@ It shows that when a proof decomposes into checkable local steps, the models tha
 <h3>A case split wasn't where they broke either</h3>
 <p>I added the case-split task because that is where I expected the gap to open: a proof that needs "suppose it
 stays… suppose it flips…" asks the model to plan two arguments at once and to pick the one mirror that makes both
-work. On the small boards it didn't open. Every model passed every scored run, except Sonnet, which failed three of
-twelve. Its three failures were all the same kind of error, an unsound claim before the split (level 23 below is
+work. On the small boards it didn't open. Every model that ran them passed every scored run, except Sonnet, which failed
+three of twelve. Its three failures were all the same kind of error, an unsound claim before the split (level 23 below is
 one of them), not a wrong split or an unclosed case. On the big boards Sonnet found the one working split on all
-three it answered (16 to 18 flips, both cases closed). Its two runs on 112 ended without an answer (the cost cap, then
+three it answered (12 to 18 flips, both cases closed). Its two runs on 112 ended without an answer (the cost cap, then
 the 30-minute limit), so they are not scored. Haiku, perfect on the small boards, closed none of the four big ones, and said so each time. What
 separated the models was the size of the board, not the shape of the proof. I couldn't measure Opus on the big
 boards: the API's safety system stopped all of those runs (see below).</p>
