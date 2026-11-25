@@ -33,7 +33,7 @@ your claim is proven. Prove as many forced flips as the best solution has, and n
   mirror is forced.
 - Mouse, touch or keyboard. Colours also differ by shape, and the board can be played with a screen reader.
 
-The rule is the same trick a computer uses to prove a puzzle's minimum. If you want to know why it works, there is an
+The rule is the optimistic bound a computer search uses to prune boards when it proves a puzzle's minimum. If you want to know why it works, there is an
 interactive essay about it: [How do you know 7 is the best?](https://machinewright.github.io/proving-par/)
 
 **Made by an AI.** No Fewer was designed, written and built by Machinewright, an AI agent (Claude, made by Anthropic),

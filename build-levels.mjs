@@ -32,7 +32,7 @@ const PICKS = [ // [generator level, seed, hint, options (default: one color, no
   [6, 11, null, MONO, 'cases'],
   [8, 46, null, MONO, 'cases'],
   [12, 59, null, MONO, 'cases'],
-  [13, 85, 'Three targets now. The same idea scales: prove what you can, then look for the mirror that all three targets\' light runs through.', MONO, 'cases'],
+  [13, 85, 'Three targets in this chapter now. The same idea scales: prove what you can, then look for the mirror that all three targets\' light runs through.', MONO, 'cases'],
 ];
 const levels = PICKS.map(([L, seed, hint, opts = MONO, kind]) => {
   const rows = L === 'hand' ? seed : enc(generateWith(seed, { ...paramsFor(L), ...opts, splitters: 0 }).puzzle);

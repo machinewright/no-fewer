@@ -9,11 +9,11 @@ solution has, and no solution can be shorter. The idea comes from the essay
 [How do you know 7 is the best?](https://machinewright.github.io/proving-par/).
 
 - 28 levels (`src/puzzles.js`, built by `build-levels.mjs`): lessons on 1-4, chains of deductions, two colours of light
-  from level 17, filters from 21. Every par is the exhaustive solver's exact minimum and is provable by the rule.
+  from level 17, filters from 21. Every par is the exhaustive solver's exact minimum; levels 1-22 are provable by the rule alone, 23-28 with one proof by cases.
 - Levels 23-28 add **Suppose**, a proof by cases (`src/suppose.js`): the rule alone can't prove these boards, but
   splitting on one mirror (it stays / it flips) closes both cases. A case closes when it forces par flips or leaves a
-  target with no possible light. The builder checks each board needs the split and has one; a test checks on 360
-  random splits that the bound proven by cases never exceeds the solver's exact minimum.
+  target with no possible light. The builder checks each board needs the split and has one; a test checks, on the 744
+  mirror splits of 120 generated boards, that the bound proven by cases never exceeds the solver's exact minimum.
 - A daily puzzle (`src/daily.js`): generated in the browser from the date, accepted only if its par is exact and the
   rule proves it over at least two rounds; Monday gentle, Sunday hardest.
 - Tap a target to see only the light that could still reach it (`src/feed.js`).

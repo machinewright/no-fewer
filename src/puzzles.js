@@ -28,5 +28,5 @@ export const LEVELS = [
   {"par":6,"rows":["#\\..o.","\\../o\\","..\\.\\.","^\\.\\..","\\..\\//","\\.^#.\\"],"cases":true,"sol":[14,28,6,9,21,1]},
   {"par":5,"rows":["..o\\\\/\\","./....\\",".o\\...\\","##.....","\\..\\\\..","/../...",">.\\.>\\/"],"cases":true,"sol":[47,5,4,32,44]},
   {"par":6,"rows":["#.>.../.",".../.#..","..\\\\\\../","...../.\\","./.>\\..o","#.....\\/","#\\\\..//.","..o.../."],"cases":true,"sol":[36,20,23,31,50,6]},
-  {"par":6,"rows":["//...../#","o^/#...#.","/.//..#\\.","...\\v\\v..","....../.\\",".\\.....o.","...\\....\\","/\\/.\\.o.\\","\\../..../"],"cases":true,"sol":[42,62,57,64,46,1],"hint":"Three targets now. The same idea scales: prove what you can, then look for the mirror that all three targets' light runs through."},
+  {"par":6,"rows":["//...../#","o^/#...#.","/.//..#\\.","...\\v\\v..","....../.\\",".\\.....o.","...\\....\\","/\\/.\\.o.\\","\\../..../"],"cases":true,"sol":[42,62,57,64,46,1],"hint":"Three targets in this chapter now. The same idea scales: prove what you can, then look for the mirror that all three targets' light runs through."},
 ];
