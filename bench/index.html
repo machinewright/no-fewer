@@ -86,11 +86,13 @@ count. Blank means not run, or no scored run (see "What went wrong in the measur
 
 <h2>What I take from it</h2>
 <h3>Proving was not much harder than solving</h3>
-<p>I expected a gap. On these boards there mostly wasn't one. Opus and Sonnet proved 12- to 18-flip minimums on the big
-boards about as reliably as they found the solutions; the proofs took longer (Sonnet: 4 to 14 minutes per passed big
+<p>I expected a gap. For the two strongest models there mostly wasn't one. Opus and Sonnet proved 12- to 18-flip
+minimums on the big boards about as reliably as they found the solutions (Opus: 3 of its 6 big-board proofs were
+scored, the other 3 hit safety stops); the proofs took longer (Sonnet: 4 to 14 minutes per passed big
 proof, against 2 to 6 for solving), but they came out right. The likely reason is the rule itself. A claim-rule proof
 is a list of local facts ("if this mirror stays, light can't reach that target"), and finding a solution already
-requires tracing the same light paths. So this experiment doesn't show that models can prove lower bounds in general.
+requires tracing the same light paths. These boards were also chosen so that claims alone can prove them. So this experiment doesn't show that models can
+prove lower bounds in general.
 It shows that when a proof decomposes into checkable local steps, the models that can solve can usually also prove.</p>
 
 <h3>A case split wasn't where they broke either</h3>
@@ -100,8 +102,8 @@ work. On the small boards it didn't open. Every model that ran them passed every
 three of twelve. Its three failures were all the same kind of error, an unsound claim before the split (level 23 below is
 one of them), not a wrong split or an unclosed case. On the big boards Sonnet found the one working split on all
 three it answered (12 to 18 flips, both cases closed). Its two runs on 112 ended without an answer (the cost cap, then
-the 30-minute limit), so they are not scored. Haiku, perfect on the small boards, closed none of the four big ones, and said so each time. What
-separated the models was the size of the board, not the shape of the proof. I couldn't measure Opus on the big
+the 30-minute limit), so they are not scored. Haiku, perfect on the small boards, closed none of the four big ones, and said so each time. For
+Haiku, at least, the size of the board was where it broke, not the shape of the proof. I couldn't measure Opus on the big
 boards: the API's safety system stopped all of those runs (see below).</p>
 
 <h3>Where proofs broke: a true claim with a false reason</h3>
@@ -189,9 +191,9 @@ solution. A solution is right or wrong as a whole. A proof can reach a true conc
 hold, and only a step-by-step check catches it.</p>
 <h3>Two ways to fail</h3>
 <p>Haiku failed differently on the two tasks. On big boards its wrong solutions were confident: a list of flips, one
-target still dark. Its failed proofs mostly said so: "I have not verified any claim, so I am not submitting any," and
-an empty list. A model that knows when it hasn't proved something is more useful than one that is right slightly
-more often, and the solve task alone would never have shown this.</p>
+or more targets still dark. Its failed proofs said so: three were "I have not verified any claim, so I am not submitting any" and an
+empty list; the other two listed the few claims they had checked and said they fell short of the bound. I'd rather use a model that knows when it hasn't proved something than one that is right slightly more often, and
+the solve task alone would never have shown this difference.</p>
 
 <h2>What went wrong in the measuring</h2>
 <p>Three things looked like results and weren't.</p>
@@ -201,14 +203,14 @@ hung silently until the timeout. Those runs are not scored here; most were rerun
 a subscription plan should check the provider's logs before reading a timeout as a model's answer.</p>
 <p><strong>Safety stops.</strong> 8 of 39 Opus runs, including all three big case-split runs, were ended by the API's safety system partway through the reasoning
 (the puzzle has nothing to do with it; the stop names a classifier). They are not scored, and I did not rephrase or
-retry around them.</p>
+retry around them. Three other Opus runs were stopped once and then completed their answer; those are scored.</p>
 <p><strong>A no-tools agent that had a back door.</strong> The OpenCode agent I used for the no-tools runs had every
-file, shell and web tool switched off, but not the one that starts a helper agent. In 10 of about 100 OpenCode runs
+file, shell and web tool switched off, but not the one that starts a helper agent. In 10 of the 110 OpenCode runs
 the model used it: it handed the puzzle to a helper with the default tools, which in some runs wrote and ran a Python
 search. I found this only while writing this page, when the supposedly empty folder turned out to hold
-<code>solve.py</code> and <code>proof.py</code>. Those 10 runs are not scored; most of them were DeepSeek's big-board
-attempts, so that row is now mostly blank. Three of those runs had passed (two big-board proofs and one big-board
-solution), and an earlier table in the repository counted them before this correction. The agent now has that tool switched off as well. The Claude runs
+<code>solve.py</code> and <code>proof.py</code>. Those 10 runs are not scored. Eight of them were DeepSeek's, mostly on
+the big boards, so that part of its row is now blank. Five of the 10 had passed (three on big boards, two on game
+levels), and an earlier table in the repository counted them before this correction. The agent now has that tool switched off as well. The Claude runs
 were not affected: the Claude Code CLI ran with every tool off, and none of their transcripts show a tool call.</p>
 <p>gemini-4-argon is missing because every run returned the provider's monthly spending cap error.</p>
 

@@ -34,4 +34,4 @@ The write-up with the current tables is [index.html](https://machinewright.githu
 from the transcripts by `node rescore.mjs && node table.mjs`). Not scored: runs with no answer (usage limits), runs the
 API ended with a safety stop, and 10 OpenCode runs in which the model started a helper agent that had tools (the
 `plain` agent didn't switch off `task` until 2026-11-25; it does now). An earlier version of this README counted
-three of those runs as passes.
+five of those runs as passes.
